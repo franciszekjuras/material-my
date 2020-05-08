@@ -1,6 +1,8 @@
 #include "togglesettingseditor.h"
 #include <QColorDialog>
 #include <qtmaterialtoggle.h>
+#include <lib/qtmaterialstyle.h>
+#include <lib/qtmaterialtheme.h>
 
 ToggleSettingsEditor::ToggleSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -14,7 +16,8 @@ ToggleSettingsEditor::ToggleSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);
@@ -26,6 +29,13 @@ ToggleSettingsEditor::ToggleSettingsEditor(QWidget *parent)
     canvas->setLayout(layout);
     layout->addWidget(m_toggle);
     layout->setAlignment(m_toggle, Qt::AlignCenter);
+    m_toggle->setText("Sfag Yolo");
+
+    for(int i = 0; i < 10; ++i){
+        QtMaterialToggle *tgl = new QtMaterialToggle;
+        tgl->setText("Sfag Yolo");
+        layout->addWidget(tgl);
+    }
 
     setupForm();
 
@@ -39,6 +49,7 @@ ToggleSettingsEditor::ToggleSettingsEditor(QWidget *parent)
     connect(ui->trackColorToolButton, SIGNAL(pressed()), this, SLOT(selectColor()));
 
     connect(m_toggle, SIGNAL(toggled(bool)), this, SLOT(setupForm()));
+
 }
 
 ToggleSettingsEditor::~ToggleSettingsEditor()

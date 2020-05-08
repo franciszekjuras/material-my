@@ -1,11 +1,13 @@
 #ifndef QTMATERIALAUTOCOMPLETE_H
 #define QTMATERIALAUTOCOMPLETE_H
 
-#include "qtmaterialtextfield.h"
+#include <QColor>
+#include "lib/qtmaterialtheme.h"
+#include "qtmaterialflatbutton.h"
 
 class QtMaterialAutoCompletePrivate;
 
-class QtMaterialAutoComplete : public QtMaterialTextField
+class QtMaterialAutoComplete : public QtMaterialFlatButton
 {
     Q_OBJECT
 
@@ -15,11 +17,13 @@ public:
 
     void setDataSource(const QStringList &data);
 
+    //QColor foregroundColor() const override;
+
 signals:
     void itemSelected(QString);
 
 protected slots:
-    void updateResults(QString text);
+    void updateResults();
 
 protected:
     bool event(QEvent *event) Q_DECL_OVERRIDE;

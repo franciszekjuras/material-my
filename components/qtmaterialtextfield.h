@@ -11,6 +11,7 @@ class QtMaterialTextField : public QLineEdit
     Q_OBJECT
 
     Q_PROPERTY(QColor textColor WRITE setTextColor READ textColor)
+    Q_PROPERTY(QColor backgroundColor WRITE setBackgroundColor READ backgroundColor)
     Q_PROPERTY(QColor inkColor WRITE setInkColor READ inkColor)
     Q_PROPERTY(QColor inputLineColor WRITE setInputLineColor READ inputLineColor)
 
@@ -32,6 +33,9 @@ public:
 
     void setTextColor(const QColor &color);
     QColor textColor() const;
+
+    void setBackgroundColor(const QColor &color);
+    QColor backgroundColor() const;
 
     void setLabelColor(const QColor &color);
     QColor labelColor() const;

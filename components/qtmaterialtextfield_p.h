@@ -23,6 +23,8 @@ public:
     QtMaterialTextFieldStateMachine *stateMachine;
     QtMaterialTextFieldLabel        *label;
     QColor                           textColor;
+    QColor                           lastTextColor;
+    QColor                           backgroundColor;
     QColor                           labelColor;
     QColor                           inkColor;
     QColor                           inputLineColor;

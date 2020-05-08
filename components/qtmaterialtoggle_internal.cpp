@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QEvent>
 #include <QtWidgets/QGraphicsDropShadowEffect>
+#include <QDebug>
 #include "qtmaterialtoggle.h"
 #include "lib/qtmaterialripple.h"
 
@@ -36,13 +37,14 @@ void QtMaterialToggleRippleOverlay::addToggleRipple()
 
     int t, w;
 
-    if (Qt::Horizontal == m_toggle->orientation()) {
-        t = m_toggle->height()/2;
-        w = m_thumb->height()/2+10;
-    } else {
-        t = m_toggle->width()/2;
-        w = m_thumb->width()/2+10;
-    }
+//    if (Qt::Horizontal == m_toggle->orientation()) {
+//        t = m_toggle->height()/2;
+//        w = m_thumb->height()/2+10;
+//    } else {
+//        t = m_toggle->width()/2;
+//        w = m_thumb->width()/2+10;
+//    }
+    t = 24; w = 26;
 
     QtMaterialRipple *ripple = new QtMaterialRipple(QPoint(10+t, 20+t));
     ripple->setColor(m_track->trackColor());
@@ -138,14 +140,14 @@ void QtMaterialToggleThumb::paintEvent(QPaintEvent *event)
     painter.setBrush(brush);
     painter.setPen(Qt::NoPen);
 
-    int s;
+    int s = 32 -10;
     QRectF r;
 
     if (Qt::Horizontal == m_toggle->orientation()) {
-        s = height()-10;
+        //s = height()-10;
         r = QRectF(5+m_offset, 5, s, s);
     } else {
-        s = width()-10;
+        //s = width()-10;
         r = QRectF(5, 5+m_offset, s, s);
     }
 
@@ -160,9 +162,9 @@ void QtMaterialToggleThumb::paintEvent(QPaintEvent *event)
 
 void QtMaterialToggleThumb::updateOffset()
 {
-    const QSize s(Qt::Horizontal == m_toggle->orientation()
-        ? size() : size().transposed());
-    m_offset = m_shift*static_cast<qreal>(s.width()-s.height());
+    //const QSize s(Qt::Horizontal == m_toggle->orientation()
+    //    ? size() : size().transposed());
+    m_offset = m_shift*static_cast<qreal>(16);//s.width()-s.height());
     update();
 }
 
@@ -219,13 +221,19 @@ void QtMaterialToggleTrack::paintEvent(QPaintEvent *event)
     painter.setBrush(brush);
     painter.setPen(Qt::NoPen);
 
+    //MOD
+    int height = 48;
+    int width = 64;
+    //END
+
     if (Qt::Horizontal == m_toggle->orientation()) {
-        const int h = height()/2;
-        const QRect r(0, h/2, width(), h);
+        const int h = height/2;
+        const QRect r(0, h/2, width, h);
         painter.drawRoundedRect(r.adjusted(14, 4, -14, -4), h/2-4, h/2-4);
     } else {
-        const int w = width()/2;
-        const QRect r(w/2, 0, w, height());
+        qSwap(height, width);
+        const int w = width/2;
+        const QRect r(w/2, 0, w, height);
         painter.drawRoundedRect(r.adjusted(4, 14, -4, -14), w/2-4, w/2-4);
     }
 }

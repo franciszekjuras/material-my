@@ -3,6 +3,8 @@
 #include <QRadioButton>
 #include <QColorDialog>
 #include <qtmaterialradiobutton.h>
+#include <lib/qtmaterialstyle.h>
+
 
 RadioButtonSettingsEditor::RadioButtonSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -18,7 +20,8 @@ RadioButtonSettingsEditor::RadioButtonSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

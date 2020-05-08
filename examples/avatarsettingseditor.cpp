@@ -2,6 +2,7 @@
 #include <QColorDialog>
 #include <qtmaterialavatar.h>
 #include <lib/qtmaterialtheme.h>
+#include <lib/qtmaterialstyle.h>
 
 AvatarSettingsEditor::AvatarSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -15,7 +16,8 @@ AvatarSettingsEditor::AvatarSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

@@ -2,6 +2,8 @@
 #include <QColorDialog>
 #include <qtmaterialiconbutton.h>
 #include <lib/qtmaterialtheme.h>
+#include <lib/qtmaterialstyle.h>
+
 
 IconButtonSettingsEditor::IconButtonSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -64,7 +66,8 @@ void IconButtonSettingsEditor::init()
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

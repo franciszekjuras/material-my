@@ -2,6 +2,7 @@
 #include <QColorDialog>
 #include <QDebug>
 #include <qtmaterialflatbutton.h>
+#include <lib/qtmaterialstyle.h>
 
 FlatButtonSettingsEditor::FlatButtonSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -26,6 +27,8 @@ FlatButtonSettingsEditor::FlatButtonSettingsEditor(QtMaterialFlatButton *button,
 
 void FlatButtonSettingsEditor::setupForm()
 {
+    //m_button->setFont(QFont("Roboto",10,QFont::Normal));
+
     switch (m_button->role())
     {
     case Material::Default:
@@ -267,7 +270,8 @@ void FlatButtonSettingsEditor::init()
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);
@@ -279,6 +283,15 @@ void FlatButtonSettingsEditor::init()
     canvas->setLayout(layout);
     layout->addWidget(m_button);
     layout->setAlignment(m_button, Qt::AlignCenter);
+
+//    for(int i = 0; i < 10; ++i){
+//        QtMaterialFlatButton *tfd = new QtMaterialFlatButton;
+//        tfd->setText("Wat is this");
+//        //tfd->setFont(fs);
+//        tfd->setMinimumWidth(250);
+//        layout->addWidget(tfd);
+//        layout->setAlignment(tfd, Qt::AlignCenter);
+//    }
 
     setupForm();
 

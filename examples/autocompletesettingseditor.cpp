@@ -2,12 +2,16 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <qtmaterialautocomplete.h>
+#include <qtmaterialflatbutton.h>
+#include <lib/qtmaterialstyle.h>
+#include <qtmaterialframe.h>
 
 AutoCompleteSettingsEditor::AutoCompleteSettingsEditor(QWidget *parent)
     : QWidget(parent),
       //ui(new Ui::AutoCompleteSettingsForm),
       m_autocomplete(new QtMaterialAutoComplete)
 {
+
     QVBoxLayout *layout = new QVBoxLayout;
     setLayout(layout);
 
@@ -15,10 +19,11 @@ AutoCompleteSettingsEditor::AutoCompleteSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
-    canvas->setMinimumHeight(900); //
+    canvas->setMinimumHeight(300); //
 
     //ui->setupUi(widget);
     layout->setContentsMargins(20, 20, 20, 20);
@@ -26,68 +31,47 @@ AutoCompleteSettingsEditor::AutoCompleteSettingsEditor(QWidget *parent)
     layout = new QVBoxLayout;
     canvas->setLayout(layout);
 
+    m_autocomplete->setFixedWidth(300);
+    m_autocomplete->setUseThemeColors(true);
+
     QStringList states =
-      { "Alabama"
-      , "Alaska"
+      {  "Arizona"
+        , "Arkansas"
+        , "California"
+        ,"Alabama"
+        , "Alaska"
+//         , "Arkdfdfansas"
+//         , "Calidffornia"
+//         ,"Alabfdama"
+//         , "Aladfska"
+//      , "American Samoa"
+//         , "Arkdfdddfansas"
+//         , "Calddidffornia"
+//         ,"Aladbfdama"
+//         , "Aladdfska"
+//         , "Arkdfsddfansas"
+//         , "Cddlidffornia"
+//         ,"Alfdfabfdama"
+//         , "Aaladfska"
+//      , "Ameridcan Samoa"
       , "American Samoa"
-      , "Arizona"
-      , "Arkansas"
-      , "California"
-      , "Colorado"
-      , "Connecticut"
-      , "Delaware"
-      , "District of Columbia"
-      , "Florida"
-      , "Georgia"
-      , "Guam"
-      , "Hawaii"
-      , "Idaho"
-      , "Illinois"
-      , "Indiana"
-      , "Iowa"
-      , "Kansas"
-      , "Kentucky"
-      , "Louisiana"
-      , "Maine"
-      , "Maryland"
-      , "Massachusetts"
-      , "Michigan"
-      , "Minnesota"
-      , "Mississippi"
-      , "Missouri"
-      , "Montana"
-      , "Nebraska"
-      , "Nevada"
-      , "New Hampshire"
-      , "New Jersey"
-      , "New Mexico"
-      , "New York"
-      , "North Carolina"
-      , "North Dakota"
-      , "Northern Marianas Islands"
-      , "Ohio"
-      , "Oklahoma"
-      , "Oregon"
-      , "Pennsylvania"
-      , "Puerto Rico"
-      , "Rhode Island"
-      , "South Carolina"
-      , "South Dakota"
-      , "Tennessee"
-      , "Texas"
-      , "Utah"
-      , "Vermont"
-      , "Virginia"
-      , "Virgin Islands"
-      , "Washington"
-      , "West Virginia"
-      , "Wisconsin"
-      , "Wyoming"
     };
 
     m_autocomplete->setDataSource(states);
 
+//    QtMaterialFrame *frm = new QtMaterialFrame;
+
+//    layout->addWidget(frm);
+
+//    QVBoxLayout *frmlayout = new QVBoxLayout;
+//    frm->setLayout(frmlayout);
+
     layout->addWidget(m_autocomplete);
+
+    for(int i = 0; i < 10; ++i){
+        layout->addWidget(new QtMaterialFlatButton("Sfag Yolo"));
+    }
+
     layout->addSpacing(600);
     layout->setAlignment(m_autocomplete, Qt::AlignCenter);
 

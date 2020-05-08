@@ -141,7 +141,7 @@ void QtMaterialFlatButtonStateMachine::setHaloScaleFactor(qreal factor)
 
 void QtMaterialFlatButtonStateMachine::startAnimations()
 {
-    m_haloAnimation->start();
+    //m_haloAnimation->start();
     start();
 }
 
@@ -149,11 +149,13 @@ void QtMaterialFlatButtonStateMachine::setupProperties()
 {
     QColor overlayColor;
 
-    if (Qt::TransparentMode == m_button->backgroundMode()) {
-        overlayColor = m_button->backgroundColor();
-    } else {
-        overlayColor = m_button->foregroundColor();
-    }
+//    if (Qt::TransparentMode == m_button->backgroundMode()) {
+//        overlayColor = m_button->backgroundColor();
+//    } else {
+//        overlayColor = m_button->foregroundColor();
+//    }
+
+    overlayColor = m_button->overlayColor();
 
     const qreal baseOpacity = m_button->baseOpacity();
 

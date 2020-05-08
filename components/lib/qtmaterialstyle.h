@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QCommonStyle>
 #include "lib/qtmaterialstyle_p.h"
+#include "lib/qtmaterialtheme.h"
 
 #define MATERIAL_DISABLE_THEME_COLORS \
     if (d->useThemeColors == true) { d->useThemeColors = false; }
@@ -15,9 +16,11 @@ class QtMaterialStyle : public QCommonStyle
 
 public:
     inline static QtMaterialStyle &instance();
+    inline static QColor transparentized(QColor clr, double alpha_mult);
 
     void setTheme(QtMaterialTheme *theme);
     QColor themeColor(const QString &key) const;
+    QColor themeColor(const QString &key, double alpha_mult) const;
 
 protected:
     const QScopedPointer<QtMaterialStylePrivate> d_ptr;
@@ -35,6 +38,11 @@ inline QtMaterialStyle &QtMaterialStyle::instance()
 {
     static QtMaterialStyle instance;
     return instance;
+}
+
+inline QColor QtMaterialStyle::transparentized(QColor clr, double alpha_mult){
+    clr.setAlphaF(clr.alphaF()*alpha_mult);
+    return  clr;
 }
 
 #endif // QTMATERIALSTYLE_H

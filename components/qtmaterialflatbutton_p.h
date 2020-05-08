@@ -3,6 +3,7 @@
 
 #include <QtGlobal>
 #include <QColor>
+#include <QStaticText>
 #include "lib/qtmaterialtheme.h"
 
 class QtMaterialFlatButton;
@@ -39,8 +40,14 @@ public:
     qreal                             baseOpacity;
     qreal                             fontSize;
     bool                              useThemeColors;
+    bool                              useThemeFont;
+    bool                              textual;
     bool                              useFixedRippleRadius;
     bool                              haloVisible;
+
+    QStaticText                       staticText;
+    int                               atm;
+    int                               ltc;
 };
 
 #endif // QTMATERIALFLATBUTTON_P_H

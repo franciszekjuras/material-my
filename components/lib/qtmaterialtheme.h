@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QScopedPointer>
 #include <QColor>
+#include <QFont>
 #include <QIcon>
 
 namespace Material
@@ -304,7 +305,6 @@ namespace Material
         grey900,
         black,
         white,
-        transparent,
         fullBlack,
         darkBlack,
         lightBlack,
@@ -327,11 +327,16 @@ public:
     ~QtMaterialTheme();
 
     QColor getColor(const QString &key) const;
+    QColor getColor(const QString &key, double alpha_mult) const;
 
     void setColor(const QString &key, const QColor &color);
-    void setColor(const QString &key, Material::Color color);
+    void setColor(const QString &key, Material::Color color, double alpha = 1.);
+
+    QFont getFont(const QString &key) const;
+    void setFont(const QString &key, const QFont &font);
 
     static QIcon icon(QString category, QString icon);
+    static QFont font(QString family, double scale, double size, int weight = QFont::Normal, double spacing = 0., QFont::Capitalization cap = QFont::MixedCase);
 
 protected:
     const QScopedPointer<QtMaterialThemePrivate> d_ptr;

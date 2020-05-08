@@ -93,9 +93,9 @@ void QtMaterialTextField::setShowLabel(bool value)
     }
 
     if (value) {
-        setContentsMargins(0, 23, 0, 0);
+        setContentsMargins(10, 23+5, 10, 5);
     } else {
-        setContentsMargins(0, 0, 0, 0);
+        setContentsMargins(10, 5, 10, 5);
     }
 }
 
@@ -149,7 +149,6 @@ void QtMaterialTextField::setTextColor(const QColor &color)
     Q_D(QtMaterialTextField);
 
     d->textColor = color;
-    setStyleSheet(QString("QLineEdit { color: %1; }").arg(color.name()));
 
     MATERIAL_DISABLE_THEME_COLORS
     d->stateMachine->setupProperties();
@@ -163,6 +162,27 @@ QColor QtMaterialTextField::textColor() const
         return QtMaterialStyle::instance().themeColor("text");
     } else {
         return d->textColor;
+    }
+}
+
+void QtMaterialTextField::setBackgroundColor(const QColor &color)
+{
+    Q_D(QtMaterialTextField);
+
+    d->backgroundColor = color;
+
+    MATERIAL_DISABLE_THEME_COLORS
+    d->stateMachine->setupProperties();
+}
+
+QColor QtMaterialTextField::backgroundColor() const
+{
+    Q_D(const QtMaterialTextField);
+
+    if (d->useThemeColors || !d->backgroundColor.isValid()) {
+        return QtMaterialStyle::instance().themeColor("elevation");//elevatedThemeColor("canvas", "elevation", Material::dp06);
+    } else {
+        return d->backgroundColor;
     }
 }
 
@@ -181,7 +201,7 @@ QColor QtMaterialTextField::labelColor() const
     Q_D(const QtMaterialTextField);
 
     if (d->useThemeColors || !d->labelColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("accent3");
+        return QtMaterialStyle::instance().themeColor("primary3");
     } else {
         return d->labelColor;
     }
@@ -267,7 +287,7 @@ bool QtMaterialTextField::event(QEvent *event)
     case QEvent::Resize:
     case QEvent::Move: {
         if (d->label) {
-            d->label->setGeometry(rect());
+            d->label->setGeometry(rect().translated(10,-3));
         }
     }
     default:
@@ -283,17 +303,35 @@ void QtMaterialTextField::paintEvent(QPaintEvent *event)
 {
     Q_D(QtMaterialTextField);
 
-    QLineEdit::paintEvent(event);
+    if(d->lastTextColor != textColor()){
+        d->lastTextColor = textColor();
+        setStyleSheet(QString("QLineEdit { background-color: #00000000; color:%1}").arg(textColor().name()));
+        //rgba(0,0,0,0)
+    }
 
-    QPainter painter(this);
+    {
+        QPainter painter(this);
+
+        QBrush brush;
+        brush.setStyle(Qt::SolidPattern);
+        brush.setColor(backgroundColor());
+        painter.setBrush(brush);
+        painter.setPen(Qt::NoPen);
+        painter.drawRect(rect());
+    }
+
+    QLineEdit::paintEvent(event);
 
     const qreal progress = d->stateMachine->progress();
 
-    if (text().isEmpty() && progress < 1)
-    {
-        painter.setOpacity(1-progress);
-        painter.fillRect(rect(), parentWidget()->palette().color(backgroundRole()));
-    }
+//    if (text().isEmpty() && progress < 1)
+//    {
+//        painter.setOpacity(1-progress);
+//        painter.fillRect(rect(), parentWidget()->palette().color(backgroundRole()));
+//    }
+
+    QPainter painter(this);
+    QBrush brush;
 
     const int y = height()-1;
     const int wd = width()-5;
@@ -308,10 +346,10 @@ void QtMaterialTextField::paintEvent(QPaintEvent *event)
             pen.setStyle(Qt::DashLine);
 
         painter.setPen(pen);
-        painter.setOpacity(1);
+        //painter.setOpacity(1.);
         painter.drawLine(QLineF(2.5, y, wd, y));
 
-        QBrush brush;
+        //QBrush brush;
         brush.setStyle(Qt::SolidPattern);
         brush.setColor(inkColor());
 

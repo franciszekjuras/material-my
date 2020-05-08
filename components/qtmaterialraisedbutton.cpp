@@ -44,7 +44,7 @@ void QtMaterialRaisedButtonPrivate::init()
     q->setBackgroundMode(Qt::OpaqueMode);
     q->setMinimumHeight(42);
     q->setGraphicsEffect(effect);
-    q->setBaseOpacity(0.3);
+    //q->setBaseOpacity(0.3);
 
     shadowStateMachine->addState(normalState);
     shadowStateMachine->addState(pressedState);

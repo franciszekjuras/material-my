@@ -114,7 +114,7 @@ QtMaterialTab::QtMaterialTab(QtMaterialTabs *parent)
     setCornerRadius(0);
     setRole(Material::Primary);
     setBackgroundMode(Qt::OpaqueMode);
-    setBaseOpacity(0.25);
+    //setBaseOpacity(0.25);
 
     connect(this, SIGNAL(clicked(bool)), this, SLOT(activateTab()));
 }

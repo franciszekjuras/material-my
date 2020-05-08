@@ -13,6 +13,7 @@ class QtMaterialToggle : public QAbstractButton
     Q_PROPERTY(QColor activeColor WRITE setActiveColor READ activeColor)
     Q_PROPERTY(QColor inactiveColor WRITE setInactiveColor READ inactiveColor)
     Q_PROPERTY(QColor trackColor WRITE setTrackColor READ trackColor)
+    Q_PROPERTY(QColor textColor WRITE setTextColor READ textColor)
 
 public:
     explicit QtMaterialToggle(QWidget *parent = 0);
@@ -32,6 +33,9 @@ public:
 
     void setTrackColor(const QColor &color);
     QColor trackColor() const;
+
+    void setTextColor(const QColor &color);
+    QColor textColor() const;
 
     void setOrientation(Qt::Orientation orientation);
     Qt::Orientation orientation() const;

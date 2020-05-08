@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <QColor>
+#include <QFont>
 
 class QtMaterialTheme;
 
@@ -19,6 +20,7 @@ public:
 
     QtMaterialTheme *const q_ptr;
     QHash<QString, QColor> colors;
+    QHash<QString, QFont> fonts;
 };
 
 #endif // QTMATERIALTHEME_P_H

@@ -3,6 +3,8 @@
 #include <QColorDialog>
 #include <QtWidgets/QTextEdit>
 #include <qtmaterialscrollbar.h>
+#include <lib/qtmaterialstyle.h>
+
 
 ScrollBarSettingsEditor::ScrollBarSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -17,7 +19,8 @@ ScrollBarSettingsEditor::ScrollBarSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

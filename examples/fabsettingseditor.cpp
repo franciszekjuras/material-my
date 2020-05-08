@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QColorDialog>
 #include <qtmaterialfab.h>
+#include <lib/qtmaterialstyle.h>
 
 FloatingActionButtonSettingsEditor::FloatingActionButtonSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -16,7 +17,8 @@ FloatingActionButtonSettingsEditor::FloatingActionButtonSettingsEditor(QWidget *
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

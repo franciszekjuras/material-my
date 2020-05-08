@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QColorDialog>
 #include <qtmaterialslider.h>
+#include <lib/qtmaterialstyle.h>
 
 SliderSettingsEditor::SliderSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -15,7 +16,8 @@ SliderSettingsEditor::SliderSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

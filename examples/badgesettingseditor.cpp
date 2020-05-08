@@ -2,6 +2,7 @@
 #include <QColorDialog>
 #include <qtmaterialavatar.h>
 #include <qtmaterialbadge.h>
+#include <lib/qtmaterialstyle.h>
 
 BadgeSettingsEditor::BadgeSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -16,7 +17,8 @@ BadgeSettingsEditor::BadgeSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

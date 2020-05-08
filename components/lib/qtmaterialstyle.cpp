@@ -32,6 +32,7 @@ void QtMaterialStylePrivate::init()
  *  \internal
  */
 
+
 void QtMaterialStyle::setTheme(QtMaterialTheme *theme)
 {
     Q_D(QtMaterialStyle);
@@ -47,6 +48,15 @@ QColor QtMaterialStyle::themeColor(const QString &key) const
     Q_ASSERT(d->theme);
 
     return d->theme->getColor(key);
+}
+
+QColor QtMaterialStyle::themeColor(const QString &key, double alpha_mult) const
+{
+    Q_D(const QtMaterialStyle);
+
+    Q_ASSERT(d->theme);
+
+    return d->theme->getColor(key, alpha_mult);
 }
 
 QtMaterialStyle::QtMaterialStyle()

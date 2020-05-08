@@ -35,17 +35,40 @@ QtMaterialTheme::QtMaterialTheme(QObject *parent)
 {
     setColor("primary1", Material::cyan500);
     setColor("primary2", Material::cyan700);
-    setColor("primary3", Material::lightBlack);
+    setColor("primary3", Material::grey600);
     setColor("accent1", Material::pinkA200);
     setColor("accent2", Material::grey100);
     setColor("accent3", Material::grey500);
     setColor("text", Material::darkBlack);
     setColor("alternateText", Material::white);
     setColor("canvas", Material::white);
+    setColor("surface", Material::grey100);
+    setColor("elevation", Material::grey500, 0.1);
     setColor("border", Material::grey300);
+    setColor("thumb", Material::white);
+    setColor("surfaceOverlay", Material::grey700, 0.1);
+    setColor("primaryOverlay", Material::white, 0.3);
     setColor("disabled", Material::minBlack);
     setColor("disabled2", Material::faintBlack);
     setColor("disabled3", Material::grey300);
+
+    double scale = 1.;
+    setFont("H1", font("Roboto", scale, 96., QFont::Light , -1.5 ));
+    setFont("H2", font("Roboto", scale, 60., QFont::Light , -0.5 ));
+    setFont("H3", font("Roboto", scale, 48., QFont::Normal,  0.  ));
+    setFont("H4", font("Roboto", scale, 34., QFont::Normal,  0.25));
+    setFont("H5", font("Roboto", scale, 24., QFont::Normal,  0.  ));
+    setFont("H6", font("Roboto", scale, 20., QFont::Medium,  0.15));
+
+    setFont("Subtitle1", font("Roboto", scale, 16., QFont::Normal,  0.15));
+    setFont("Subtitle2", font("Roboto", scale, 14., QFont::Medium,  0.1 ));
+    setFont("Body1"    , font("Roboto", scale, 16., QFont::Normal,  0.5 ));
+    setFont("Body2"    , font("Roboto", scale, 14., QFont::Normal,  0.25));
+
+    setFont("Button"   , font("Roboto", scale, 14., QFont::Medium,  1.25, QFont::AllUppercase));
+    setFont("Caption"  , font("Roboto", scale, 12., QFont::Normal,  0.4 ));
+    setFont("Overline" , font("Roboto", scale, 10., QFont::Normal,  1.5 , QFont::AllUppercase));
+
 }
 
 QtMaterialTheme::~QtMaterialTheme()
@@ -63,6 +86,19 @@ QColor QtMaterialTheme::getColor(const QString &key) const
     return d->colors.value(key);
 }
 
+QColor QtMaterialTheme::getColor(const QString &key, double alpha_mult) const
+{
+    Q_D(const QtMaterialTheme);
+
+    if (!d->colors.contains(key)) {
+        qWarning() << "A theme color matching the key '" << key << "' could not be found.";
+        return QColor();
+    }
+    QColor color =  d->colors.value(key);
+    color.setAlphaF(color.alphaF()*alpha_mult);
+    return color;
+}
+
 void QtMaterialTheme::setColor(const QString &key, const QColor &color)
 {
     Q_D(QtMaterialTheme);
@@ -70,7 +106,7 @@ void QtMaterialTheme::setColor(const QString &key, const QColor &color)
     d->colors.insert(key, color);
 }
 
-void QtMaterialTheme::setColor(const QString &key, Material::Color color)
+void QtMaterialTheme::setColor(const QString &key, Material::Color color, double alpha)
 {
     Q_D(QtMaterialTheme);
 
@@ -139,18 +175,55 @@ void QtMaterialTheme::setColor(const QString &key, Material::Color color)
         QColor("#fafafa"), QColor("#f5f5f5"), QColor("#eeeeee"), QColor("#e0e0e0"),
         QColor("#bdbdbd"), QColor("#9e9e9e"), QColor("#757575"), QColor("#616161"),
         QColor("#424242"), QColor("#212121"), QColor("#000000"), QColor("#ffffff"),
-        d->rgba(0, 0, 0, 0),
-        d->rgba(0, 0, 0, 1),
-        d->rgba(0, 0, 0, 0.87),
-        d->rgba(0, 0, 0, 0.54),
-        d->rgba(0, 0, 0, 0.26),
-        d->rgba(0, 0, 0, 0.12),
-        d->rgba(255, 255, 255, 1),
-        d->rgba(255, 255, 255, 0.87),
-        d->rgba(255, 255, 255, 0.54)
-    };
+        QColor("#000000"), //black
+        QColor("#212121"), //grey900
+        QColor("#757575"), //grey600
+        QColor("#bdbdbd"), //grey400
+        QColor("#e0e0e0"), //grey300
+        QColor("#ffffff"), //white
+        QColor("#dedede"), //white900
+        QColor("#8a8a8a") //white600
 
-    d->colors.insert(key, palette[color]);
+
+//        d->rgba(0, 0, 0, 1),
+//        d->rgba(0, 0, 0, 0.87),
+//        d->rgba(0, 0, 0, 0.54),
+//        d->rgba(0, 0, 0, 0.26),
+//        d->rgba(0, 0, 0, 0.12),
+
+//        d->rgba(255, 255, 255, 1),
+//        d->rgba(255, 255, 255, 0.87),
+//        d->rgba(255, 255, 255, 0.54)
+    };
+    QColor clr = palette[color];
+    clr.setAlphaF(alpha);
+    d->colors.insert(key, clr);
+}
+
+QFont QtMaterialTheme::getFont(const QString &key) const
+{
+    Q_D(const QtMaterialTheme);
+
+    if (!d->fonts.contains(key)) {
+        qWarning() << "A theme font matching the key '" << key << "' could not be found.";
+        return QFont();
+    }
+    return d->fonts.value(key);
+}
+
+void QtMaterialTheme::setFont(const QString &key, const QFont &font)
+{
+    Q_D(QtMaterialTheme);
+
+    d->fonts.insert(key, font);
+}
+
+QFont QtMaterialTheme::font(QString family, double scale, double size, int weight, double spacing, QFont::Capitalization cap){
+    QFont font(family, int(scale*size), weight);
+    font.setPointSizeF(scale*size);
+    font.setLetterSpacing(QFont::AbsoluteSpacing, scale*spacing);
+    font.setCapitalization(cap);
+    return font;
 }
 
 QIcon QtMaterialTheme::icon(QString category, QString icon)

@@ -190,7 +190,7 @@ QColor QtMaterialSlider::trackColor() const
     Q_D(const QtMaterialSlider);
 
     if (d->useThemeColors || !d->trackColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("accent3");
+        return QtMaterialStyle::instance().themeColor("primary3");
     } else {
         return d->trackColor;
     }

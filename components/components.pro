@@ -12,6 +12,7 @@ SOURCES = \
     lib/qtmaterialripple.cpp \
     lib/qtmaterialrippleoverlay.cpp \
     qtmaterialfab.cpp \
+    qtmaterialframe.cpp \
     qtmaterialraisedbutton.cpp \
     qtmaterialflatbutton_internal.cpp \
     qtmaterialflatbutton.cpp \
@@ -67,6 +68,7 @@ HEADERS = \
     lib/qtmaterialcheckable.h \
     qtmaterialfab_p.h \
     qtmaterialfab.h \
+    qtmaterialframe.h \
     qtmaterialraisedbutton_p.h \
     qtmaterialraisedbutton.h \
     qtmaterialflatbutton_internal.h \

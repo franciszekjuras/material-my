@@ -248,7 +248,7 @@ QColor QtMaterialCheckable::disabledColor() const
     Q_D(const QtMaterialCheckable);
 
     if (d->useThemeColors || !d->disabledColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("accent3");
+        return QtMaterialStyle::instance().themeColor("disabled");
     } else {
         return d->disabledColor;
     }
@@ -388,9 +388,11 @@ void QtMaterialCheckable::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
 
     if (QtMaterialCheckable::LabelPositionLeft == d->labelPosition) {
-        painter.drawText(4, 25, text());
+        painter.drawText(rect().adjusted(4, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, text());
+        //painter.drawText(4, yOffset, text());
     } else {
-        painter.drawText(48, 25, text());
+        painter.drawText(rect().adjusted(48, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, text());
+        //painter.drawText(48, yOffset, text());
     }
 }
 

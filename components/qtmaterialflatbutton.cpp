@@ -40,7 +40,7 @@ void QtMaterialFlatButtonPrivate::init()
 
     rippleOverlay        = new QtMaterialRippleOverlay(q);
     stateMachine         = new QtMaterialFlatButtonStateMachine(q);
-    role                 = Material::Default;
+    role                 = Material::Primary;
     rippleStyle          = Material::PositionedRipple;
     iconPlacement        = Material::LeftIcon;
     overlayStyle         = Material::GrayOverlay;
@@ -48,11 +48,16 @@ void QtMaterialFlatButtonPrivate::init()
     textAlignment        = Qt::AlignHCenter;
     fixedRippleRadius    = 64;
     cornerRadius         = 3;
-    baseOpacity          = 0.13;
+    baseOpacity          = 1.;
     fontSize             = 10;        // 10.5;
     useThemeColors       = true;
+    useThemeFont         = true;
+    textual              = false;
     useFixedRippleRadius = false;
     haloVisible          = true;
+
+    atm                  = 0;
+    ltc                  = 0;
 
     q->setStyle(&QtMaterialStyle::instance());
     q->setAttribute(Qt::WA_Hover);
@@ -91,6 +96,7 @@ QtMaterialFlatButton::QtMaterialFlatButton(const QString &text, QWidget *parent,
     d_func()->init();
 
     applyPreset(preset);
+    setText(text);
 }
 
 QtMaterialFlatButton::QtMaterialFlatButton(const QString &text, Material::Role role, QWidget *parent, Material::ButtonPreset preset)
@@ -101,6 +107,7 @@ QtMaterialFlatButton::QtMaterialFlatButton(const QString &text, Material::Role r
 
     applyPreset(preset);
     setRole(role);
+    setText(text);
 }
 
 QtMaterialFlatButton::~QtMaterialFlatButton()
@@ -143,6 +150,24 @@ bool QtMaterialFlatButton::useThemeColors() const
     return d->useThemeColors;
 }
 
+void QtMaterialFlatButton::setUseThemeFont(bool value)
+{
+    Q_D(QtMaterialFlatButton);
+
+    if (d->useThemeFont == value) {
+        return;
+    }
+
+    d->useThemeFont = value;
+}
+
+bool QtMaterialFlatButton::useThemeFont() const
+{
+    Q_D(const QtMaterialFlatButton);
+
+    return d->useThemeFont;
+}
+
 void QtMaterialFlatButton::setRole(Material::Role role)
 {
     Q_D(QtMaterialFlatButton);
@@ -175,7 +200,13 @@ QColor QtMaterialFlatButton::foregroundColor() const
     if (d->useThemeColors || !d->foregroundColor.isValid())
     {
         if (Qt::OpaqueMode == d->bgMode) {
-            return QtMaterialStyle::instance().themeColor("canvas");
+            switch (d->role)
+            {
+            case Material::Primary:
+            case Material::Secondary:
+            case Material::Default:
+                return QtMaterialStyle::instance().themeColor("alternateText");
+            }
         }
         switch (d->role)
         {
@@ -184,8 +215,7 @@ QColor QtMaterialFlatButton::foregroundColor() const
         case Material::Secondary:
             return QtMaterialStyle::instance().themeColor("accent1");
         case Material::Default:
-        default:
-            return QtMaterialStyle::instance().themeColor("text");
+            return QtMaterialStyle::instance().themeColor("primary3");
         }
     }
     return d->foregroundColor;
@@ -215,7 +245,7 @@ QColor QtMaterialFlatButton::backgroundColor() const
             return QtMaterialStyle::instance().themeColor("accent1");
         case Material::Default:
         default:
-            return QtMaterialStyle::instance().themeColor("text");
+            return QtMaterialStyle::instance().themeColor("primary3");//elevatedThemeColor("canvas", "elevation", Material::dp03);
         }
     }
     return d->backgroundColor;
@@ -238,7 +268,17 @@ QColor QtMaterialFlatButton::overlayColor() const
     Q_D(const QtMaterialFlatButton);
 
     if (d->useThemeColors || !d->overlayColor.isValid()) {
-        return foregroundColor();
+        QString overlayType = (Qt::TransparentMode == d->bgMode)?
+                                    "surfaceOverlay" : "primaryOverlay";
+        QColor overlayColor = QtMaterialStyle::instance().themeColor(overlayType);
+
+        if(Material::TintedOverlay == d->overlayStyle){
+            QColor tintOverlay = foregroundColor();
+            tintOverlay.setAlphaF(overlayColor.alphaF());
+            return tintOverlay;
+        }
+        return overlayColor;
+        //return foregroundColor();
     }
     return d->overlayColor;
 }
@@ -419,6 +459,17 @@ void QtMaterialFlatButton::setCheckable(bool value)
     QPushButton::setCheckable(value);
 }
 
+void QtMaterialFlatButton::setTextual(bool value)
+{
+    Q_D(QtMaterialFlatButton);
+
+    if (d->textual == value) {
+        return;
+    }
+
+    d->textual = value;
+}
+
 void QtMaterialFlatButton::setHasFixedRippleRadius(bool value)
 {
     Q_D(QtMaterialFlatButton);
@@ -521,8 +572,8 @@ void QtMaterialFlatButton::mousePressEvent(QMouseEvent *event)
         QtMaterialRipple *ripple = new QtMaterialRipple(pos);
 
         ripple->setRadiusEndValue(radiusEndValue);
-        ripple->setOpacityStartValue(0.35);
-        ripple->setColor(foregroundColor());
+        ripple->setOpacityStartValue(1.);
+        ripple->setColor(overlayColor());
         ripple->radiusAnimation()->setDuration(600);
         ripple->opacityAnimation()->setDuration(1300);
 
@@ -560,6 +611,7 @@ void QtMaterialFlatButton::paintEvent(QPaintEvent *event)
 
     Q_D(QtMaterialFlatButton);
 
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -575,12 +627,15 @@ void QtMaterialFlatButton::paintEvent(QPaintEvent *event)
     }
 
     paintBackground(&painter);
+
     paintHalo(&painter);
 
     painter.setOpacity(1);
     painter.setClipping(false);
 
+    //paintTimer.start();
     paintForeground(&painter);
+    //qDebug() << "painted: foreground" << paintTimer.nsecsElapsed() << this;
 }
 
 /*!
@@ -616,12 +671,12 @@ void QtMaterialFlatButton::paintBackground(QPainter *painter)
     }
 
     if ((Material::NoOverlay != d->overlayStyle) && (overlayOpacity > 0)) {
-        if (Material::TintedOverlay == d->overlayStyle) {
+//        if (Material::TintedOverlay == d->overlayStyle) {
             brush.setColor(overlayColor());
-        } else {
-            brush.setColor(Qt::gray);
-        }
-        painter->setOpacity(overlayOpacity);
+//        } else {
+//            brush.setColor(Qt::gray);
+//        }
+        painter->setOpacity(overlayOpacity*0.4);
         painter->setBrush(brush);
         painter->drawRect(rect());
     }
@@ -655,7 +710,7 @@ void QtMaterialFlatButton::paintHalo(QPainter *painter)
     if (isEnabled() && opacity > 0) {
         QBrush brush;
         brush.setStyle(Qt::SolidPattern);
-        brush.setColor(foregroundColor());
+        brush.setColor(overlayColor());
         painter->setOpacity(opacity);
         painter->setBrush(brush);
         painter->setPen(Qt::NoPen);
@@ -693,37 +748,50 @@ void QtMaterialFlatButton::paintForeground(QPainter *painter)
         painter->setPen(disabledForegroundColor());
     }
 
-    if (icon().isNull())  {
-        if (Qt::AlignLeft == d->textAlignment) {
-            painter->drawText(rect().adjusted(12, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, text());
-        } else {
-            painter->drawText(rect(), Qt::AlignCenter, text());
-        }
+    QPoint lt;
+
+    if (Qt::AlignLeft == d->textAlignment) {
+       lt = rect().topLeft() + QPoint(12, rect().center().y() - d->atm);
+    } else { //Qt::AlignCenter
+       lt = rect().center() - QPoint(d->ltc, d->atm);
+    }
+
+    if(icon().isNull()){
+        // paint text only
+        painter->drawStaticText(lt, d->staticText);
         return;
     }
 
-    QSize textSize(fontMetrics().size(Qt::TextSingleLine, text()));
-    QSize base(size()-textSize);
-
+    // calculate text and icon positions
     const int iw = iconSize().width() + IconPadding;
-    QPoint pos(Qt::AlignLeft == d->textAlignment ? 12 : (base.width()-iw)/2, 0);
+    QPoint icolt;
 
-    QRect textGeometry(pos + QPoint(0, base.height()/2), textSize);
-    QRect iconGeometry(pos + QPoint(0, (height()-iconSize().height())/2), iconSize());
-
-    if (Material::LeftIcon == d->iconPlacement) {
-        textGeometry.translate(iw, 0);
-    } else {
-        iconGeometry.translate(textSize.width() + IconPadding, 0);
+    if(Material::RightIcon == d->iconPlacement){
+        //no changes to text position
+        //calculate icon position
+        icolt = QPoint( width()-iconSize().width()-IconPadding, (height()-iconSize().height())/2 );
+    } else //Material::LeftIcon
+    {
+        //icon shifts text
+        if(Qt::AlignLeft == d->textAlignment) {
+            icolt = lt;
+            lt += QPoint(iw,0);
+        } else
+        {
+            lt += QPoint(iw/2,0);
+            icolt = lt + QPoint(-iw,0);
+        }
     }
-
-    painter->drawText(textGeometry, Qt::AlignCenter, text());
-
+    // paint text
+    painter->drawStaticText(lt, d->staticText);
+    // and icon
+    QRect iconGeometry(icolt, iconSize());
     QPixmap pixmap = icon().pixmap(iconSize());
     QPainter icon(&pixmap);
     icon.setCompositionMode(QPainter::CompositionMode_SourceIn);
     icon.fillRect(pixmap.rect(), painter->pen().color());
     painter->drawPixmap(iconGeometry, pixmap);
+
 }
 
 /*!
@@ -738,4 +806,28 @@ void QtMaterialFlatButton::updateClipPath()
     QPainterPath path;
     path.addRoundedRect(rect(), radius, radius);
     d->rippleOverlay->setClipPath(path);
+}
+
+void QtMaterialFlatButton::setText(const QString &text){
+    Q_D(QtMaterialFlatButton);
+    d->staticText.setText(text);
+    //left to center
+    d->ltc = (fontMetrics().width(d->staticText.text()))/2;
+    //ascent to median
+    d->atm = fontMetrics().ascent() - ((fontMetrics().capHeight()) / 2);
+
+    QPushButton::setText(text);
+}
+
+void QtMaterialFlatButton::setFont(const QFont &font){
+    Q_D(QtMaterialFlatButton);
+
+    QFontMetrics fm = QFontMetrics(font);
+    //left to center
+    d->ltc = (fm.width(d->staticText.text()))/2;
+    //ascent to median
+    d->atm = fm.ascent() - ((fm.capHeight()) / 2);
+
+    //call base class for updated fontMetrics()
+    QWidget::setFont(font);
 }

@@ -4,6 +4,7 @@
 #include <QStateMachine>
 #include <QSignalTransition>
 #include <QPropertyAnimation>
+#include <QPainter>
 #include "qtmaterialtoggle_internal.h"
 #include "lib/qtmaterialstyle.h"
 
@@ -37,6 +38,7 @@ void QtMaterialTogglePrivate::init()
     q->setCheckable(true);
     q->setChecked(false);
     q->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    q->setFont(QFont("Roboto", 11, QFont::Normal));
 
     stateMachine->addState(offState);
     stateMachine->addState(onState);
@@ -114,15 +116,16 @@ void QtMaterialTogglePrivate::setupProperties()
         const qreal shift = thumb->shift();
         if (qFuzzyCompare(shift, 1)) {
             thumb->setThumbColor(q->activeColor());
-            track->setTrackColor(q->activeColor().lighter(110));
+            track->setTrackColor(q->activeColor());//.lighter(110));
         } else if (qFuzzyCompare(1+shift, 1)) {
             thumb->setThumbColor(q->inactiveColor());
             track->setTrackColor(q->trackColor());
         }
     }
 
-    offState->assignProperty(track, "trackColor", q->trackColor().lighter(110));
-    onState->assignProperty(track, "trackColor", q->activeColor().lighter(110));
+    offState->assignProperty(track, "trackColor", q->trackColor());//.lighter(110));
+    onState->assignProperty(track, "trackColor",
+                            QtMaterialStyle::transparentized(q->activeColor(),0.8));// q->activeColor().lighter(110));
 
     offState->assignProperty(thumb, "thumbColor", q->inactiveColor());
     onState->assignProperty(thumb, "thumbColor", q->activeColor());
@@ -217,7 +220,7 @@ QColor QtMaterialToggle::inactiveColor() const
     Q_D(const QtMaterialToggle);
 
     if (d->useThemeColors || !d->inactiveColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("canvas");
+        return QtMaterialStyle::instance().themeColor("thumb");
     } else {
         return d->inactiveColor;
     }
@@ -238,11 +241,33 @@ QColor QtMaterialToggle::trackColor() const
     Q_D(const QtMaterialToggle);
 
     if (d->useThemeColors || !d->trackColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("accent3");
+        return QtMaterialStyle::instance().themeColor("primary3",0.7);
     } else {
         return d->trackColor;
     }
 }
+
+void QtMaterialToggle::setTextColor(const QColor &color)
+{
+    Q_D(QtMaterialToggle);
+
+    d->textColor = color;
+
+    MATERIAL_DISABLE_THEME_COLORS
+    d->setupProperties();
+}
+
+QColor QtMaterialToggle::textColor() const
+{
+    Q_D(const QtMaterialToggle);
+
+    if (d->useThemeColors || !d->textColor.isValid()) {
+        return QtMaterialStyle::instance().themeColor("text");
+    } else {
+        return d->textColor;
+    }
+}
+
 
 void QtMaterialToggle::setOrientation(Qt::Orientation orientation)
 {
@@ -267,9 +292,14 @@ QSize QtMaterialToggle::sizeHint() const
 {
     Q_D(const QtMaterialToggle);
 
-    return Qt::Horizontal == d->orientation
+    QSize toggleSpace = (Qt::Horizontal == d->orientation)
         ? QSize(64, 48)
         : QSize(48, 64);
+
+    if (text().isEmpty()) {
+        return toggleSpace;
+    }
+    return QSize(fontMetrics().size(Qt::TextShowMnemonic, text()).width() + toggleSpace.width() + 4, toggleSpace.height());
 }
 
 bool QtMaterialToggle::event(QEvent *event)
@@ -295,4 +325,28 @@ bool QtMaterialToggle::event(QEvent *event)
 void QtMaterialToggle::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
+
+    Q_D(QtMaterialToggle);
+
+    QPainter painter(this);
+
+    QPen pen;
+    pen.setColor(isEnabled() ? textColor() : disabledColor());
+    painter.setPen(pen);
+
+//    int btm = fontMetrics().capHeight() / 2; //base to median
+//    int yOffset = rect().center().y() + btm;
+
+    QSize toggleSpace = (Qt::Horizontal == d->orientation)
+        ? QSize(64, 48)
+        : QSize(48, 64);
+
+    int xOffset = toggleSpace.width();
+
+//    if (QtMaterialCheckable::LabelPositionLeft == d->labelPosition) {
+//        painter.drawText(4, yOffset, text());
+//    } else {
+        //painter.drawText(xOffset, yOffset, text());
+        painter.drawText(rect().adjusted(xOffset, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, text());
+//    }
 }

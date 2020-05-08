@@ -3,6 +3,8 @@
 
 #include <QtWidgets/QPushButton>
 #include <QScopedPointer>
+#include <QElapsedTimer>
+#include <QStaticText>
 #include "lib/qtmaterialtheme.h"
 
 class QtMaterialFlatButtonPrivate;
@@ -29,11 +31,14 @@ public:
     void setUseThemeColors(bool value);
     bool useThemeColors() const;
 
+    void setUseThemeFont(bool value);
+    bool useThemeFont() const;
+
     void setRole(Material::Role role);
     Material::Role role() const;
 
     void setForegroundColor(const QColor &color);
-    QColor foregroundColor() const;
+    virtual QColor foregroundColor() const;
 
     void setBackgroundColor(const QColor &color);
     QColor backgroundColor() const;
@@ -73,6 +78,8 @@ public:
 
     void setCheckable(bool value);
 
+    void setTextual(bool value);
+
     void setHasFixedRippleRadius(bool value);
     bool hasFixedRippleRadius() const;
 
@@ -80,6 +87,10 @@ public:
 
     void setTextAlignment(Qt::Alignment alignment);
     Qt::Alignment textAlignment() const;
+
+    void setText(const QString &text);
+
+    void setFont(const QFont &font);
 
     QSize sizeHint() const Q_DECL_OVERRIDE;
 
@@ -105,6 +116,9 @@ protected:
     const QScopedPointer<QtMaterialFlatButtonPrivate> d_ptr;
 
 private:
+    QElapsedTimer paintTimer;
+    QStaticText staticText;
+
     Q_DISABLE_COPY(QtMaterialFlatButton)
     Q_DECLARE_PRIVATE(QtMaterialFlatButton)
 };

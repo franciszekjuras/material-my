@@ -23,10 +23,35 @@
 #include "appbarsettingseditor.h"
 #include "autocompletesettingseditor.h"
 #include "menusettingseditor.h"
+#include "lib/qtmaterialtheme.h"
+#include "lib/qtmaterialstyle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    QtMaterialTheme* theme = new QtMaterialTheme();
+    theme->setColor("primary1", Material::cyan300);
+    theme->setColor("primary2", Material::cyan700);
+    theme->setColor("primary3", Material::grey400);
+    theme->setColor("accent1", Material::pinkA200);
+    theme->setColor("accent2", Material::grey900);
+    theme->setColor("accent3", Material::grey500);
+    theme->setColor("text", Material::grey50);
+    theme->setColor("alternateText", Material::grey900);
+    theme->setColor("canvas", Material::grey900);
+    theme->setColor("surface", Material::grey800);
+    theme->setColor("elevation", Material::white, 0.1);
+    theme->setColor("border", Material::grey700);
+    theme->setColor("thumb", Material::grey300);
+    theme->setColor("surfaceOverlay", Material::white, 0.08);
+    theme->setColor("primaryOverlay", Material::white, 0.2);
+    theme->setColor("disabled", Material::grey600);
+    theme->setColor("disabled2", Material::grey700);
+    theme->setColor("disabled3", Material::grey800);
+
+    //QtMaterialStyle::instance().setTheme(theme);
+
+
     QWidget *widget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
 

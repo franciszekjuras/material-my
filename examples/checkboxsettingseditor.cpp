@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QColorDialog>
 #include <qtmaterialcheckbox.h>
+#include <lib/qtmaterialstyle.h>
 
 CheckBoxSettingsEditor::CheckBoxSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -15,12 +16,16 @@ CheckBoxSettingsEditor::CheckBoxSettingsEditor(QWidget *parent)
     layout->addWidget(widget);
 
     QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);
     layout->setContentsMargins(20, 20, 20, 20);
 
+    QFont ft(m_checkBox->font());
+    ft.setPointSizeF(9.5);
+    m_checkBox->setFont(ft);
     m_checkBox->setText("Extra cheese");
     m_checkBox->setChecked(true);
 
