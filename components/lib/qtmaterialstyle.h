@@ -19,6 +19,8 @@ public:
     inline static QColor transparentized(QColor clr, double alpha_mult);
 
     void setTheme(QtMaterialTheme *theme);
+    int themeIdx();
+    QFont themeFont(const QString &key) const;
     QColor themeColor(const QString &key) const;
     QColor themeColor(const QString &key, double alpha_mult) const;
 

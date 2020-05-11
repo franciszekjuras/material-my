@@ -25,6 +25,7 @@ public:
     QVBoxLayout                        *menuLayout;
     QStringList                         dataSource;
     int                                 maxWidth;
+    int                                 maxHeight;
     bool                                toggle;
 };
 

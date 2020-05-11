@@ -42,6 +42,7 @@ void QtMaterialAutoCompletePrivate::init()
     stateMachine = new QtMaterialAutoCompleteStateMachine(menu);
     menuLayout   = new QVBoxLayout;
     maxWidth     = 0;
+    maxHeight    = 0;
     toggle       = false;
 
 
@@ -90,6 +91,7 @@ QtMaterialAutoComplete::QtMaterialAutoComplete(QWidget *parent)
     setOverlayStyle(Material::GrayOverlay);
     //setOverlayColor(QColor(255,0,0));
     setRole(Material::Default);
+    setTextual(true);
     setIconPlacement(Material::RightIcon);
     setIconSize(QSize(28,28));
     setIcon(QtMaterialTheme::icon("navigation", "unfold_more"));
@@ -142,18 +144,17 @@ void QtMaterialAutoComplete::updateResults()
    // }
 
     const int diff = results.length() - d->menuLayout->count();
-    QFont font("Roboto", 12, QFont::Normal);
 
     if (diff > 0) {
         for (int c = 0; c < diff; c++) {
             QtMaterialFlatButton *item = new QtMaterialFlatButton;
-            item->setFont(font);
+            item->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             item->setTextAlignment(Qt::AlignLeft);
             item->setCornerRadius(0);
             item->setHaloVisible(false);
-            item->setFixedHeight(50);
             item->setOverlayStyle(Material::GrayOverlay);
             item->setRole(Material::Default);
+            item->setTextual(true);
             //item->setBackgroundMode(Qt::OpaqueMode);
             d->menuLayout->addWidget(item);
             item->installEventFilter(this);
@@ -168,16 +169,15 @@ void QtMaterialAutoComplete::updateResults()
         }
     }
 
-    QFontMetrics *fm = new QFontMetrics(font);
-    d->maxWidth = 0;
-
     for (int i = 0; i < results.count(); ++i) {
         QWidget *widget = d->menuLayout->itemAt(i)->widget();
         QtMaterialFlatButton *item;
         if ((item = static_cast<QtMaterialFlatButton *>(widget))) {
+            QFontMetrics fm(item->mainFont());
             QString text = results.at(i);
-            QRect rect = fm->boundingRect(text);
+            QRect rect = fm.boundingRect(text);
             d->maxWidth = qMax(d->maxWidth, rect.width());
+            d->maxHeight = qMax(d->maxHeight, rect.height());
             item->setText(text);
         }
     }
@@ -190,7 +190,7 @@ void QtMaterialAutoComplete::updateResults()
         emit d->stateMachine->shouldOpen();
     }
 
-    d->menu->setFixedHeight(results.length()*50);
+    d->menu->setFixedHeight(results.length()*d->maxHeight*5/3);
     d->menu->setFixedWidth(qMax(d->maxWidth + 24, width()));
 
     d->menu->update();

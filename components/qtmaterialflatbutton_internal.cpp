@@ -80,7 +80,7 @@ QtMaterialFlatButtonStateMachine::QtMaterialFlatButtonStateMachine(QtMaterialFla
     m_neutralState->assignProperty(this, "haloSize", 0);
     m_neutralFocusedState->assignProperty(this, "haloSize", 0.7);
     m_hoveredState->assignProperty(this, "haloSize", 0);
-    m_pressedState->assignProperty(this, "haloSize", 4);
+    m_pressedState->assignProperty(this, "haloSize", 4); //4
     m_hoveredFocusedState->assignProperty(this, "haloSize", 0.7);
 
     QPropertyAnimation *grow = new QPropertyAnimation(this);
@@ -218,16 +218,18 @@ void QtMaterialFlatButtonStateMachine::addTransition(QAbstractTransition *transi
     QPropertyAnimation *animation;
 
     animation = new QPropertyAnimation(this, "overlayOpacity", this);
-    animation->setDuration(150);
+    animation->setDuration(150); //10 frames @ 60fps
     transition->addAnimation(animation);
 
     animation = new QPropertyAnimation(this, "haloOpacity", this);
-    animation->setDuration(170);
+    //animation->setDuration(170);
+    animation->setDuration(150); //10 frames @ 60fps
     transition->addAnimation(animation);
 
     animation = new QPropertyAnimation(this, "haloSize", this);
-    animation->setDuration(350);
-    animation->setEasingCurve(QEasingCurve::OutCubic);
+    //animation->setDuration(350);
+    animation->setDuration(150); //10 frames @ 60fps
+    animation->setEasingCurve(QEasingCurve::InCubic); //changed from OutCubic for similar visual effect at shorter duration
     transition->addAnimation(animation);
 
     fromState->addTransition(transition);

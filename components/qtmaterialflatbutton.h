@@ -3,7 +3,6 @@
 
 #include <QtWidgets/QPushButton>
 #include <QScopedPointer>
-#include <QElapsedTimer>
 #include <QStaticText>
 #include "lib/qtmaterialtheme.h"
 
@@ -18,12 +17,12 @@ class QtMaterialFlatButton : public QPushButton
     Q_PROPERTY(QColor overlayColor WRITE setOverlayColor READ overlayColor)
     Q_PROPERTY(QColor disabledForegroundColor WRITE setDisabledForegroundColor READ disabledForegroundColor)
     Q_PROPERTY(QColor disabledBackgroundColor WRITE setDisabledBackgroundColor READ disabledBackgroundColor)
-    Q_PROPERTY(qreal fontSize WRITE setFontSize READ fontSize)
+//    Q_PROPERTY(qreal fontSize WRITE setFontSize READ fontSize)
 
 public:
-    explicit QtMaterialFlatButton(QWidget *parent = 0, Material::ButtonPreset preset = Material::FlatPreset);
-    explicit QtMaterialFlatButton(const QString &text, QWidget *parent = 0, Material::ButtonPreset preset = Material::FlatPreset);
-    QtMaterialFlatButton(const QString &text, Material::Role role, QWidget *parent = 0, Material::ButtonPreset preset = Material::FlatPreset);
+    explicit QtMaterialFlatButton(QWidget *parent = nullptr, Material::ButtonPreset preset = Material::FlatPreset);
+    explicit QtMaterialFlatButton(const QString &text, QWidget *parent = nullptr, Material::ButtonPreset preset = Material::FlatPreset);
+    QtMaterialFlatButton(const QString &text, Material::Role role, QWidget *parent = nullptr, Material::ButtonPreset preset = Material::FlatPreset);
     ~QtMaterialFlatButton();
 
     void applyPreset(Material::ButtonPreset preset);
@@ -52,8 +51,8 @@ public:
     void setDisabledBackgroundColor(const QColor &color);
     QColor disabledBackgroundColor() const;
 
-    void setFontSize(qreal size);
-    qreal fontSize() const;
+//    void setFontSize(qreal size);
+//    qreal fontSize() const;
 
     void setHaloVisible(bool visible);
     bool isHaloVisible() const;
@@ -79,6 +78,7 @@ public:
     void setCheckable(bool value);
 
     void setTextual(bool value);
+    bool textual() const;
 
     void setHasFixedRippleRadius(bool value);
     bool hasFixedRippleRadius() const;
@@ -90,7 +90,8 @@ public:
 
     void setText(const QString &text);
 
-    void setFont(const QFont &font);
+    void setMainFont(const QFont &font);
+    QFont mainFont() const;
 
     QSize sizeHint() const Q_DECL_OVERRIDE;
 
@@ -113,10 +114,13 @@ protected:
 
     virtual void updateClipPath();
 
+    void updateTypeset();
+    void checkThemeChange();
+    void setupTheme();
+
     const QScopedPointer<QtMaterialFlatButtonPrivate> d_ptr;
 
 private:
-    QElapsedTimer paintTimer;
     QStaticText staticText;
 
     Q_DISABLE_COPY(QtMaterialFlatButton)

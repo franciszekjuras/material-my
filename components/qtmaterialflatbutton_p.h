@@ -4,6 +4,8 @@
 #include <QtGlobal>
 #include <QColor>
 #include <QStaticText>
+#include <QFont>
+#include <QFontMetrics>
 #include "lib/qtmaterialtheme.h"
 
 class QtMaterialFlatButton;
@@ -38,16 +40,19 @@ public:
     qreal                             fixedRippleRadius;
     qreal                             cornerRadius;
     qreal                             baseOpacity;
-    qreal                             fontSize;
+    //qreal                             fontSize;
     bool                              useThemeColors;
     bool                              useThemeFont;
     bool                              textual;
     bool                              useFixedRippleRadius;
     bool                              haloVisible;
 
+    QFont                             mainFont;
+    QFontMetrics                      mainFontMetrics;
     QStaticText                       staticText;
     int                               atm;
     int                               ltc;
+    int                               themeIdx;
 };
 
 #endif // QTMATERIALFLATBUTTON_P_H

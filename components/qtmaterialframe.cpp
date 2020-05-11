@@ -8,7 +8,8 @@ QtMaterialFrame::QtMaterialFrame(QWidget *parent) : QWidget(parent){
 }
 
 void QtMaterialFrame::setUseThemeColors(bool value){
-    _useThemeColors = true;
+    _useThemeColors = value;
+    update();
 }
 bool QtMaterialFrame::useThemeColors() const{
     return _useThemeColors;

@@ -7,6 +7,8 @@
  *  \internal
  */
 
+int QtMaterialStylePrivate::themeIdx = 0;
+
 QtMaterialStylePrivate::QtMaterialStylePrivate(QtMaterialStyle *q)
     : q_ptr(q)
 {
@@ -33,12 +35,30 @@ void QtMaterialStylePrivate::init()
  */
 
 
+
 void QtMaterialStyle::setTheme(QtMaterialTheme *theme)
 {
     Q_D(QtMaterialStyle);
 
     d->theme = theme;
+    d->themeIdx += 1;
     theme->setParent(this);
+}
+
+int QtMaterialStyle::themeIdx()
+{
+    Q_D(QtMaterialStyle);
+
+    return d->themeIdx;
+}
+
+QFont QtMaterialStyle::themeFont(const QString &key) const
+{
+    Q_D(const QtMaterialStyle);
+
+    Q_ASSERT(d->theme);
+
+    return d->theme->getFont(key);
 }
 
 QColor QtMaterialStyle::themeColor(const QString &key) const

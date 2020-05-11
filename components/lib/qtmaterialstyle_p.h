@@ -19,6 +19,7 @@ public:
 
     QtMaterialStyle *const q_ptr;
     QtMaterialTheme *theme;
+    static int themeIdx;
 };
 
 #endif // QTMATERIALSTYLE_P_H

@@ -6,6 +6,8 @@
 #include <QBitmap>
 #include <QPainterPath>
 #include <QIcon>
+#include <QElapsedTimer>
+#include <QDebug>
 #include "lib/qtmaterialrippleoverlay.h"
 #include "lib/qtmaterialripple.h"
 #include "lib/qtmaterialstyle.h"
@@ -20,7 +22,7 @@
  *  \internal
  */
 QtMaterialFlatButtonPrivate::QtMaterialFlatButtonPrivate(QtMaterialFlatButton *q)
-    : q_ptr(q)
+    : q_ptr(q), mainFontMetrics(QFont())
 {
 }
 
@@ -49,23 +51,21 @@ void QtMaterialFlatButtonPrivate::init()
     fixedRippleRadius    = 64;
     cornerRadius         = 3;
     baseOpacity          = 1.;
-    fontSize             = 10;        // 10.5;
+    //fontSize             = 10;        // 10.5;
     useThemeColors       = true;
     useThemeFont         = true;
     textual              = false;
     useFixedRippleRadius = false;
     haloVisible          = true;
 
-    atm                  = 0;
-    ltc                  = 0;
+    atm                  = 0.;
+    ltc                  = 0.;
 
     q->setStyle(&QtMaterialStyle::instance());
     q->setAttribute(Qt::WA_Hover);
     q->setMouseTracking(true);
 
-    QFont font("Roboto", fontSize, QFont::Medium);
-    font.setCapitalization(QFont::AllUppercase);
-    q->setFont(font);
+    mainFont = QtMaterialStyle::instance().themeFont("Button");
 
     QPainterPath path;
     path.addRoundedRect(q->rect(), cornerRadius, cornerRadius);
@@ -140,7 +140,7 @@ void QtMaterialFlatButton::setUseThemeColors(bool value)
     }
 
     d->useThemeColors = value;
-    d->stateMachine->setupProperties();
+    setupTheme();
 }
 
 bool QtMaterialFlatButton::useThemeColors() const
@@ -157,8 +157,8 @@ void QtMaterialFlatButton::setUseThemeFont(bool value)
     if (d->useThemeFont == value) {
         return;
     }
-
     d->useThemeFont = value;
+    updateTypeset();
 }
 
 bool QtMaterialFlatButton::useThemeFont() const
@@ -200,14 +200,10 @@ QColor QtMaterialFlatButton::foregroundColor() const
     if (d->useThemeColors || !d->foregroundColor.isValid())
     {
         if (Qt::OpaqueMode == d->bgMode) {
-            switch (d->role)
-            {
-            case Material::Primary:
-            case Material::Secondary:
-            case Material::Default:
-                return QtMaterialStyle::instance().themeColor("alternateText");
-            }
+            return QtMaterialStyle::instance().themeColor("alternateText");
         }
+        if(textual())
+            return QtMaterialStyle::instance().themeColor("text");
         switch (d->role)
         {
         case Material::Primary:
@@ -323,26 +319,6 @@ QColor QtMaterialFlatButton::disabledBackgroundColor() const
     } else {
         return d->disabledBackgroundColor;
     }
-}
-
-void QtMaterialFlatButton::setFontSize(qreal size)
-{
-    Q_D(QtMaterialFlatButton);
-
-    d->fontSize = size;
-
-    QFont f(font());
-    f.setPointSizeF(size);
-    setFont(f);
-
-    update();
-}
-
-qreal QtMaterialFlatButton::fontSize() const
-{
-    Q_D(const QtMaterialFlatButton);
-
-    return d->fontSize;
 }
 
 void QtMaterialFlatButton::setHaloVisible(bool visible)
@@ -466,8 +442,15 @@ void QtMaterialFlatButton::setTextual(bool value)
     if (d->textual == value) {
         return;
     }
-
     d->textual = value;
+    setupTheme();
+}
+
+bool QtMaterialFlatButton::textual() const
+{
+    Q_D(const QtMaterialFlatButton);
+
+    return d->textual;
 }
 
 void QtMaterialFlatButton::setHasFixedRippleRadius(bool value)
@@ -511,9 +494,10 @@ Qt::Alignment QtMaterialFlatButton::textAlignment() const
  */
 QSize QtMaterialFlatButton::sizeHint() const
 {
+    Q_D(const QtMaterialFlatButton);
     ensurePolished();
 
-    QSize label(fontMetrics().size(Qt::TextSingleLine, text()));
+    QSize label(d->mainFontMetrics.size(Qt::TextSingleLine, text()));
 
     int w = 20 + label.width();
     int h = label.height();
@@ -751,7 +735,7 @@ void QtMaterialFlatButton::paintForeground(QPainter *painter)
     QPoint lt;
 
     if (Qt::AlignLeft == d->textAlignment) {
-       lt = rect().topLeft() + QPoint(12, rect().center().y() - d->atm);
+       lt = rect().topLeft() + QPoint(12, (height()+1)/2 - d->atm);
     } else { //Qt::AlignCenter
        lt = rect().center() - QPoint(d->ltc, d->atm);
     }
@@ -769,18 +753,17 @@ void QtMaterialFlatButton::paintForeground(QPainter *painter)
     if(Material::RightIcon == d->iconPlacement){
         //no changes to text position
         //calculate icon position
-        icolt = QPoint( width()-iconSize().width()-IconPadding, (height()-iconSize().height())/2 );
+        icolt = QPoint( width()-iconSize().width()-IconPadding, (height()+1-iconSize().height())/2);
     } else //Material::LeftIcon
     {
         //icon shifts text
-        if(Qt::AlignLeft == d->textAlignment) {
-            icolt = lt;
+        if(Qt::AlignLeft == d->textAlignment){
             lt += QPoint(iw,0);
-        } else
-        {
-            lt += QPoint(iw/2,0);
-            icolt = lt + QPoint(-iw,0);
         }
+        else{
+            lt += QPoint(iw/2,0);
+        }
+        icolt = QPoint(lt.x() - iw,  (height()+1-iconSize().height())/2);
     }
     // paint text
     painter->drawStaticText(lt, d->staticText);
@@ -811,23 +794,61 @@ void QtMaterialFlatButton::updateClipPath()
 void QtMaterialFlatButton::setText(const QString &text){
     Q_D(QtMaterialFlatButton);
     d->staticText.setText(text);
-    //left to center
-    d->ltc = (fontMetrics().width(d->staticText.text()))/2;
-    //ascent to median
-    d->atm = fontMetrics().ascent() - ((fontMetrics().capHeight()) / 2);
+    updateTypeset();
 
     QPushButton::setText(text);
 }
 
-void QtMaterialFlatButton::setFont(const QFont &font){
+void QtMaterialFlatButton::setMainFont(const QFont &font){
     Q_D(QtMaterialFlatButton);
 
-    QFontMetrics fm = QFontMetrics(font);
+    d->mainFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
+QFont QtMaterialFlatButton::mainFont() const{
+    Q_D(const QtMaterialFlatButton);
+
+    return d->mainFont;
+}
+
+void QtMaterialFlatButton::checkThemeChange(){
+    Q_D(QtMaterialFlatButton);
+
+    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
+        return;
+    d->themeIdx = QtMaterialStyle::instance().themeIdx();
+
+    setupTheme();
+}
+
+void QtMaterialFlatButton::setupTheme(){
+    Q_D(QtMaterialFlatButton);
+
+    if(useThemeFont()){
+        if(textual()){
+            d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
+        }
+        else{
+            d->mainFont = QtMaterialStyle::instance().themeFont("Button");
+        }
+    }
+
+    updateTypeset();
+    d->stateMachine->setupProperties();
+}
+
+void QtMaterialFlatButton::updateTypeset(){
+    Q_D(QtMaterialFlatButton);
+
+    this->setFont(d->mainFont);
+
+    QFontMetrics fm = QFontMetrics(d->mainFont);
+    d->mainFontMetrics = fm;
     //left to center
-    d->ltc = (fm.width(d->staticText.text()))/2;
+    d->ltc = fm.width(d->staticText.text())/2;
     //ascent to median
     d->atm = fm.ascent() - ((fm.capHeight()) / 2);
-
-    //call base class for updated fontMetrics()
-    QWidget::setFont(font);
+    update();
 }

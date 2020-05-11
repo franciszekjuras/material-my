@@ -25,7 +25,7 @@ void QtMaterialTextFieldPrivate::init()
     Q_Q(QtMaterialTextField);
 
     stateMachine   = new QtMaterialTextFieldStateMachine(q);
-    label          = 0;
+    label          = nullptr;
     labelFontSize  = 9.5;
     showLabel      = false;
     showInputLine  = true;

@@ -103,9 +103,9 @@ void FlatButtonSettingsEditor::setupForm()
     ui->useThemeColorsCheckBox->setChecked(m_button->useThemeColors());
     ui->transparentCheckBox->setChecked(Qt::TransparentMode == m_button->backgroundMode());
     ui->cornerRadiusSpinBox->setValue(m_button->cornerRadius());
-    ui->overlayOpacityDoubleSpinBox->setValue(m_button->baseOpacity());
+    //ui->overlayOpacityDoubleSpinBox->setValue(m_button->baseOpacity());
     ui->iconSizeSpinBox->setValue(m_button->iconSize().width());
-    ui->fontSizeDoubleSpinBox->setValue(m_button->fontSize());
+    //ui->fontSizeDoubleSpinBox->setValue(m_button->fontSize());
     ui->buttonTextLineEdit->setText(m_button->text());
 }
 
@@ -189,9 +189,9 @@ void FlatButtonSettingsEditor::updateWidget()
     m_button->setBackgroundMode(ui->transparentCheckBox->isChecked()
                                 ? Qt::TransparentMode : Qt::OpaqueMode);
     m_button->setCornerRadius(ui->cornerRadiusSpinBox->value());
-    m_button->setBaseOpacity(ui->overlayOpacityDoubleSpinBox->value());
+//    m_button->setBaseOpacity(ui->overlayOpacityDoubleSpinBox->value());
     m_button->setIconSize(QSize(ui->iconSizeSpinBox->value(), ui->iconSizeSpinBox->value()));
-    m_button->setFontSize(ui->fontSizeDoubleSpinBox->value());
+//    m_button->setFontSize(ui->fontSizeDoubleSpinBox->value());
     m_button->setText(ui->buttonTextLineEdit->text());
 
     ui->checkedCheckBox->setEnabled(m_button->isCheckable());
@@ -278,6 +278,7 @@ void FlatButtonSettingsEditor::init()
     layout->setContentsMargins(20, 20, 20, 20);
 
     m_button->setFixedWidth(300);
+    m_button->setTextual(true);
 
     layout = new QVBoxLayout;
     canvas->setLayout(layout);

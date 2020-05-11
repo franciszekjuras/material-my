@@ -38,7 +38,7 @@ AutoCompleteSettingsEditor::AutoCompleteSettingsEditor(QWidget *parent)
       {  "Arizona"
         , "Arkansas"
         , "California"
-        ,"Alabama"
+        ,"Kotałson wchodzi na sucho"
         , "Alaska"
 //         , "Arkdfdfansas"
 //         , "Calidffornia"
