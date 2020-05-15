@@ -42,11 +42,12 @@ QtMaterialTheme::QtMaterialTheme(QObject *parent)
     setColor("text", Material::darkBlack);
     setColor("alternateText", Material::white);
     setColor("canvas", Material::white);
-    setColor("surface", Material::grey100);
-    setColor("elevation", Material::grey500, 0.1);
+    setColor("surface", Material::white);
+    setColor("flatElevation", Material::grey500, 0.1);
     setColor("border", Material::grey300);
     setColor("thumb", Material::white);
-    setColor("surfaceOverlay", Material::grey700, 0.1);
+    setColor("raisedElevation", Material::white);
+    setColor("surfaceOverlay", Material::grey500, 0.1);
     setColor("primaryOverlay", Material::white, 0.3);
     setColor("disabled", Material::minBlack);
     setColor("disabled2", Material::faintBlack);

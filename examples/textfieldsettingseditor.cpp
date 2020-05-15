@@ -3,6 +3,7 @@
 #include <QColorDialog>
 #include <qtmaterialtextfield.h>
 #include <lib/qtmaterialstyle.h>
+#include <qtmaterialframe.h>
 
 TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -15,9 +16,9 @@ TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     QWidget *widget = new QWidget;
     layout->addWidget(widget);
 
-    QWidget *canvas = new QWidget;
-    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
-    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
+    QWidget *canvas = new QtMaterialFrame;
+//    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+//    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);
@@ -34,6 +35,7 @@ TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     fs.setPointSizeF(12.5);
     m_textField->setFont(fs);
     m_textField->setMinimumWidth(250);
+    m_textField->setReadOnly(true);
 
     for(int i = 0; i < 5; ++i){
         QtMaterialTextField *tfd = new QtMaterialTextField;

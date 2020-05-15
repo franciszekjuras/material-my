@@ -3,6 +3,7 @@
 #include <QColorDialog>
 #include <qtmaterialsnackbar.h>
 #include <lib/qtmaterialstyle.h>
+#include <qtmaterialframe.h>
 
 
 SnackbarSettingsEditor::SnackbarSettingsEditor(QWidget *parent)
@@ -16,9 +17,9 @@ SnackbarSettingsEditor::SnackbarSettingsEditor(QWidget *parent)
     QWidget *widget = new QWidget;
     layout->addWidget(widget);
 
-    QWidget *canvas = new QWidget;
-    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
-    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
+    QWidget *canvas = new QtMaterialFrame;
+//    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+//    canvas->setStyleSheet(QString("QWidget { background: ") + canvasColor.name() + "; }");
     layout->addWidget(canvas);
 
     ui->setupUi(widget);

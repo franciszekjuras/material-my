@@ -229,7 +229,7 @@ void QtMaterialFlatButtonStateMachine::addTransition(QAbstractTransition *transi
     animation = new QPropertyAnimation(this, "haloSize", this);
     //animation->setDuration(350);
     animation->setDuration(150); //10 frames @ 60fps
-    animation->setEasingCurve(QEasingCurve::InCubic); //changed from OutCubic for similar visual effect at shorter duration
+    animation->setEasingCurve(QEasingCurve::Linear); //changed from OutCubic for similar visual effect at shorter duration
     transition->addAnimation(animation);
 
     fromState->addTransition(transition);

@@ -88,6 +88,9 @@ public:
     void setTextAlignment(Qt::Alignment alignment);
     Qt::Alignment textAlignment() const;
 
+    void setAnimateMouselessPress(bool val);
+    bool animateMouselessPress();
+
     void setText(const QString &text);
 
     void setMainFont(const QFont &font);
@@ -113,6 +116,7 @@ protected:
     virtual void paintForeground(QPainter *painter);
 
     virtual void updateClipPath();
+    virtual void addPressRipple();
 
     void updateTypeset();
     void checkThemeChange();

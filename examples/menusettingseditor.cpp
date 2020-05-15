@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <qtmaterialmenu.h>
+#include <qtmaterialframe.h>
 
 MenuSettingsEditor::MenuSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -14,8 +15,8 @@ MenuSettingsEditor::MenuSettingsEditor(QWidget *parent)
     QWidget *widget = new QWidget;
     layout->addWidget(widget);
 
-    QWidget *canvas = new QWidget;
-    canvas->setStyleSheet("QWidget { background: white; }");
+    QWidget *canvas = new QtMaterialFrame;
+    //canvas->setStyleSheet("QWidget { background: white; }");
     layout->addWidget(canvas);
 
     //ui->setupUi(widget);

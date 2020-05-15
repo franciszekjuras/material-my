@@ -23,8 +23,11 @@
 #include "appbarsettingseditor.h"
 #include "autocompletesettingseditor.h"
 #include "menusettingseditor.h"
+#include "combosettingseditor.h"
 #include "lib/qtmaterialtheme.h"
 #include "lib/qtmaterialstyle.h"
+
+#include <QPainter>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -40,17 +43,17 @@ MainWindow::MainWindow(QWidget *parent)
     theme->setColor("alternateText", Material::grey900);
     theme->setColor("canvas", Material::grey900);
     theme->setColor("surface", Material::grey800);
-    theme->setColor("elevation", Material::white, 0.1);
+    theme->setColor("flatElevation", Material::white, 0.1);
     theme->setColor("border", Material::grey700);
     theme->setColor("thumb", Material::grey300);
+    theme->setColor("raisedElevation", Material::white, 0.13);
     theme->setColor("surfaceOverlay", Material::white, 0.08);
     theme->setColor("primaryOverlay", Material::white, 0.2);
     theme->setColor("disabled", Material::grey600);
     theme->setColor("disabled2", Material::grey700);
     theme->setColor("disabled3", Material::grey800);
 
-    //QtMaterialStyle::instance().setTheme(theme);
-
+    QtMaterialStyle::instance().setTheme(theme);
 
     QWidget *widget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
@@ -88,6 +91,7 @@ MainWindow::MainWindow(QWidget *parent)
     AppBarSettingsEditor *appBar = new AppBarSettingsEditor;
     AutoCompleteSettingsEditor *autocomplete = new AutoCompleteSettingsEditor;
     MenuSettingsEditor *menu = new MenuSettingsEditor;
+    ComboSettingsEditor *combo = new ComboSettingsEditor;
 
     stack->addWidget(appBar);
     stack->addWidget(autocomplete);
@@ -95,6 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
     stack->addWidget(badge);
     stack->addWidget(checkbox);
     stack->addWidget(circularProgress);
+    stack->addWidget(combo);
     stack->addWidget(dialog);
     stack->addWidget(drawer);
     stack->addWidget(fab);
@@ -117,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     list->addItem("Badge");
     list->addItem("Checkbox");
     list->addItem("Circular Progress");
+    list->addItem("Combo");
     list->addItem("Dialog");
     list->addItem("Drawer");
     list->addItem("Floating Action Button");
@@ -135,6 +141,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     list->setCurrentRow(0);
 
+
+//    QColor canvasColor = QtMaterialStyle::instance().themeColor("canvas");
+
     QObject::connect(list,  &QListWidget::currentItemChanged,
         [=](QListWidgetItem *current, QListWidgetItem *previous)
     {
@@ -142,6 +151,14 @@ MainWindow::MainWindow(QWidget *parent)
         Q_UNUSED(previous)
         stack->setCurrentIndex(list->currentRow());
     });
+}
+
+void MainWindow::paintEvent(QPaintEvent *event){
+    {
+        QPainter painter(this);
+        painter.fillRect(rect(), QColor(Qt::white));// QtMaterialStyle::instance().themeColor("canvas"));
+    }
+    QMainWindow::paintEvent(event);
 }
 
 MainWindow::~MainWindow()

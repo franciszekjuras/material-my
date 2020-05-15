@@ -11,6 +11,9 @@ SOURCES = \
     lib/qtmaterialcheckable.cpp \
     lib/qtmaterialripple.cpp \
     lib/qtmaterialrippleoverlay.cpp \
+    qtmaterialcombo.cpp \
+    qtmaterialdropdown.cpp \
+    qtmaterialdropdown_internal.cpp \
     qtmaterialfab.cpp \
     qtmaterialframe.cpp \
     qtmaterialraisedbutton.cpp \
@@ -66,6 +69,11 @@ HEADERS = \
     lib/qtmaterialripple.h \
     lib/qtmaterialrippleoverlay.h \
     lib/qtmaterialcheckable.h \
+    qtmaterialcombo.h \
+    qtmaterialcombo_p.h \
+    qtmaterialdropdown.h \
+    qtmaterialdropdown_internal.h \
+    qtmaterialdropdown_p.h \
     qtmaterialfab_p.h \
     qtmaterialfab.h \
     qtmaterialframe.h \

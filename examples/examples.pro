@@ -2,6 +2,7 @@ QT += core gui widgets
 TEMPLATE = app
 CONFIG += c++11
 SOURCES = mainwindow.cpp \
+    combosettingseditor.cpp \
     main.cpp \
     avatarsettingseditor.cpp \
     badgesettingseditor.cpp \
@@ -28,6 +29,7 @@ HEADERS = mainwindow.h \
     avatarsettingseditor.h \
     badgesettingseditor.h \
     checkboxsettingseditor.h \
+    combosettingseditor.h \
     fabsettingseditor.h \
     raisedbuttonsettingseditor.h \
     flatbuttonsettingseditor.h \

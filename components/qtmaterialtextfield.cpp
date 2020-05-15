@@ -180,7 +180,7 @@ QColor QtMaterialTextField::backgroundColor() const
     Q_D(const QtMaterialTextField);
 
     if (d->useThemeColors || !d->backgroundColor.isValid()) {
-        return QtMaterialStyle::instance().themeColor("elevation");//elevatedThemeColor("canvas", "elevation", Material::dp06);
+        return QtMaterialStyle::instance().themeColor("flatElevation");
     } else {
         return d->backgroundColor;
     }

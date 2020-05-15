@@ -10,6 +10,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 };
 
 #endif // MAINWINDOW_H

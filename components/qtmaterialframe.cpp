@@ -1,10 +1,18 @@
 #include "qtmaterialframe.h"
 #include <QPainter>
+#include <QtWidgets/QGraphicsDropShadowEffect>
 #include "lib/qtmaterialstyle.h"
 
 QtMaterialFrame::QtMaterialFrame(QWidget *parent) : QWidget(parent){
     _cornerRadius = 0.;
     _useThemeColors = true;
+
+    QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect;
+
+    effect->setBlurRadius(8);
+    effect->setOffset(QPointF(0, 1));
+    effect->setColor(QColor(0, 0, 0, 75));
+    setGraphicsEffect(effect);
 }
 
 void QtMaterialFrame::setUseThemeColors(bool value){

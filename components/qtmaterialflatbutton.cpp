@@ -57,6 +57,8 @@ void QtMaterialFlatButtonPrivate::init()
     textual              = false;
     useFixedRippleRadius = false;
     haloVisible          = true;
+    animateMouselessPress= true;
+    rippleFromMouse      = false;
 
     atm                  = 0.;
     ltc                  = 0.;
@@ -74,6 +76,8 @@ void QtMaterialFlatButtonPrivate::init()
 
     stateMachine->setupProperties();
     stateMachine->startAnimations();
+
+    QObject::connect(q, &QtMaterialFlatButton::pressed, q, &QtMaterialFlatButton::addPressRipple);
 }
 
 /*!
@@ -241,7 +245,7 @@ QColor QtMaterialFlatButton::backgroundColor() const
             return QtMaterialStyle::instance().themeColor("accent1");
         case Material::Default:
         default:
-            return QtMaterialStyle::instance().themeColor("primary3");//elevatedThemeColor("canvas", "elevation", Material::dp03);
+            return QtMaterialStyle::instance().themeColor("primary3");
         }
     }
     return d->backgroundColor;
@@ -489,6 +493,20 @@ Qt::Alignment QtMaterialFlatButton::textAlignment() const
     return d->textAlignment;
 }
 
+void QtMaterialFlatButton::setAnimateMouselessPress(bool val)
+{
+    Q_D(QtMaterialFlatButton);
+
+    d->animateMouselessPress = val;
+}
+
+bool QtMaterialFlatButton::animateMouselessPress()
+{
+    Q_D(QtMaterialFlatButton);
+
+    return d->animateMouselessPress;
+}
+
 /*!
  *  \reimp
  */
@@ -536,33 +554,8 @@ void QtMaterialFlatButton::mousePressEvent(QMouseEvent *event)
 {
     Q_D(QtMaterialFlatButton);
 
-    if (Material::NoRipple != d->rippleStyle)
-    {
-        QPoint pos;
-        qreal radiusEndValue;
-
-        if (Material::CenteredRipple == d->rippleStyle) {
-            pos = rect().center();
-        } else {
-            pos = event->pos();
-        }
-
-        if (d->useFixedRippleRadius) {
-            radiusEndValue = d->fixedRippleRadius;
-        } else {
-            radiusEndValue = static_cast<qreal>(width())/2;
-        }
-
-        QtMaterialRipple *ripple = new QtMaterialRipple(pos);
-
-        ripple->setRadiusEndValue(radiusEndValue);
-        ripple->setOpacityStartValue(1.);
-        ripple->setColor(overlayColor());
-        ripple->radiusAnimation()->setDuration(600);
-        ripple->opacityAnimation()->setDuration(1300);
-
-        d->rippleOverlay->addRipple(ripple);
-    }
+    d->rippleFromMouse = true;
+    d->pressPos = event->pos();
 
     QPushButton::mousePressEvent(event);
 }
@@ -789,6 +782,44 @@ void QtMaterialFlatButton::updateClipPath()
     QPainterPath path;
     path.addRoundedRect(rect(), radius, radius);
     d->rippleOverlay->setClipPath(path);
+}
+
+/*!
+ *  \internal
+ */
+void QtMaterialFlatButton::addPressRipple()
+{
+    Q_D(QtMaterialFlatButton);
+
+    if (Material::NoRipple != d->rippleStyle &&
+            (d->rippleFromMouse || animateMouselessPress()))
+    {
+        QPoint pos;
+        qreal radiusEndValue;
+
+        if ((Material::CenteredRipple == d->rippleStyle) || !d->rippleFromMouse) {
+            pos = rect().center();
+        } else {
+            pos = d->pressPos;
+        }
+
+        if (d->useFixedRippleRadius) {
+            radiusEndValue = d->fixedRippleRadius;
+        } else {
+            radiusEndValue = static_cast<qreal>(width())/2;
+        }
+
+        QtMaterialRipple *ripple = new QtMaterialRipple(pos);
+
+        ripple->setRadiusEndValue(radiusEndValue);
+        ripple->setOpacityStartValue(1.);
+        ripple->setColor(overlayColor());
+        ripple->radiusAnimation()->setDuration(600);
+        ripple->opacityAnimation()->setDuration(1300);
+
+        d->rippleOverlay->addRipple(ripple);
+    }
+    d->rippleFromMouse = false;
 }
 
 void QtMaterialFlatButton::setText(const QString &text){

@@ -53,6 +53,9 @@ public:
     int                               atm;
     int                               ltc;
     int                               themeIdx;
+    bool                              rippleFromMouse;
+    QPoint                            pressPos;
+    bool                              animateMouselessPress;
 };
 
 #endif // QTMATERIALFLATBUTTON_P_H
