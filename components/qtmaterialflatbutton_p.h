@@ -5,7 +5,6 @@
 #include <QColor>
 #include <QStaticText>
 #include <QFont>
-#include <QFontMetrics>
 #include "lib/qtmaterialtheme.h"
 
 class QtMaterialFlatButton;
@@ -48,7 +47,6 @@ public:
     bool                              haloVisible;
 
     QFont                             mainFont;
-    QFontMetrics                      mainFontMetrics;
     QStaticText                       staticText;
     int                               atm;
     int                               ltc;

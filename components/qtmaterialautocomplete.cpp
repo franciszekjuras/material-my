@@ -173,12 +173,12 @@ void QtMaterialAutoComplete::updateResults()
         QWidget *widget = d->menuLayout->itemAt(i)->widget();
         QtMaterialFlatButton *item;
         if ((item = static_cast<QtMaterialFlatButton *>(widget))) {
-            QFontMetrics fm(item->mainFont());
-            QString text = results.at(i);
-            QRect rect = fm.boundingRect(text);
-            d->maxWidth = qMax(d->maxWidth, rect.width());
-            d->maxHeight = qMax(d->maxHeight, rect.height());
-            item->setText(text);
+//            QFontMetrics fm(item->mainFont());
+//            QString text = results.at(i);
+//            QRect rect = fm.boundingRect(text);
+//            d->maxWidth = qMax(d->maxWidth, rect.width());
+//            d->maxHeight = qMax(d->maxHeight, rect.height());
+            item->setText(results.at(i));
         }
     }
 

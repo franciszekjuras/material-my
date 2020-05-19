@@ -65,12 +65,12 @@ ComboSettingsEditor::ComboSettingsEditor(QWidget *parent)
 
     layout->addWidget(m_combo);
 
-    for(int i = 0; i < 10; ++i){
+    for(int i = 0; i < 5; ++i){
         layout->addWidget(new QtMaterialFlatButton("Sfag Yolo"));
     }
 
     layout->addSpacing(600);
-    //layout->setAlignment(m_combo, Qt::AlignCenter);
+    layout->setAlignment(m_combo, Qt::AlignCenter);
 
 }
 

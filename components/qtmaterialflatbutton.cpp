@@ -22,7 +22,7 @@
  *  \internal
  */
 QtMaterialFlatButtonPrivate::QtMaterialFlatButtonPrivate(QtMaterialFlatButton *q)
-    : q_ptr(q), mainFontMetrics(QFont())
+    : q_ptr(q)
 {
 }
 
@@ -67,7 +67,8 @@ void QtMaterialFlatButtonPrivate::init()
     q->setAttribute(Qt::WA_Hover);
     q->setMouseTracking(true);
 
-    mainFont = QtMaterialStyle::instance().themeFont("Button");
+    q->setupTheme();
+    //mainFont = QtMaterialStyle::instance().themeFont("Button");
 
     QPainterPath path;
     path.addRoundedRect(q->rect(), cornerRadius, cornerRadius);
@@ -162,7 +163,7 @@ void QtMaterialFlatButton::setUseThemeFont(bool value)
         return;
     }
     d->useThemeFont = value;
-    updateTypeset();
+    setupTheme();
 }
 
 bool QtMaterialFlatButton::useThemeFont() const
@@ -171,6 +172,62 @@ bool QtMaterialFlatButton::useThemeFont() const
 
     return d->useThemeFont;
 }
+
+void QtMaterialFlatButton::setText(const QString &text){
+    Q_D(QtMaterialFlatButton);
+    d->staticText.setText(text);
+    updateTypeset();
+
+    QPushButton::setText(text);
+}
+
+void QtMaterialFlatButton::setMainFont(const QFont &font){
+    Q_D(QtMaterialFlatButton);
+
+    d->mainFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
+void QtMaterialFlatButton::checkThemeChange(){
+    Q_D(QtMaterialFlatButton);
+
+    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
+        return;
+    d->themeIdx = QtMaterialStyle::instance().themeIdx();
+
+    setupTheme();
+}
+
+void QtMaterialFlatButton::setupTheme(){
+    Q_D(QtMaterialFlatButton);
+
+    if(useThemeFont()){
+        if(textual()){
+            d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
+        }
+        else{
+            d->mainFont = QtMaterialStyle::instance().themeFont("Button");
+        }
+    }
+
+    updateTypeset();
+    d->stateMachine->setupProperties();
+}
+
+void QtMaterialFlatButton::updateTypeset(){
+    Q_D(QtMaterialFlatButton);
+
+    this->setFont(d->mainFont);
+
+    QFontMetrics fm = QFontMetrics(d->mainFont);
+    //left to center
+    d->ltc = fm.width(d->staticText.text())/2;
+    //ascent to median
+    d->atm = fm.ascent() - ((fm.capHeight()) / 2);
+    update();
+}
+
 
 void QtMaterialFlatButton::setRole(Material::Role role)
 {
@@ -515,7 +572,7 @@ QSize QtMaterialFlatButton::sizeHint() const
     Q_D(const QtMaterialFlatButton);
     ensurePolished();
 
-    QSize label(d->mainFontMetrics.size(Qt::TextSingleLine, text()));
+    QSize label(fontMetrics().size(Qt::TextSingleLine, text()));
 
     int w = 20 + label.width();
     int h = label.height();
@@ -822,64 +879,3 @@ void QtMaterialFlatButton::addPressRipple()
     d->rippleFromMouse = false;
 }
 
-void QtMaterialFlatButton::setText(const QString &text){
-    Q_D(QtMaterialFlatButton);
-    d->staticText.setText(text);
-    updateTypeset();
-
-    QPushButton::setText(text);
-}
-
-void QtMaterialFlatButton::setMainFont(const QFont &font){
-    Q_D(QtMaterialFlatButton);
-
-    d->mainFont = font;
-    d->useThemeFont = false;
-    updateTypeset();
-}
-
-QFont QtMaterialFlatButton::mainFont() const{
-    Q_D(const QtMaterialFlatButton);
-
-    return d->mainFont;
-}
-
-void QtMaterialFlatButton::checkThemeChange(){
-    Q_D(QtMaterialFlatButton);
-
-    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
-        return;
-    d->themeIdx = QtMaterialStyle::instance().themeIdx();
-
-    setupTheme();
-}
-
-void QtMaterialFlatButton::setupTheme(){
-    Q_D(QtMaterialFlatButton);
-
-    if(useThemeFont()){
-        if(textual()){
-            d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
-        }
-        else{
-            d->mainFont = QtMaterialStyle::instance().themeFont("Button");
-        }
-    }
-
-    updateTypeset();
-    d->stateMachine->setupProperties();
-}
-
-void QtMaterialFlatButton::updateTypeset(){
-    Q_D(QtMaterialFlatButton);
-
-    this->setFont(d->mainFont);
-
-    QFontMetrics fm = QFontMetrics(d->mainFont);
-    d->mainFontMetrics = fm;
-    //left to center
-    d->ltc = fm.width(d->staticText.text())/2;
-    //ascent to median
-    d->atm = fm.ascent() - ((fm.capHeight()) / 2);
-    update();
-}

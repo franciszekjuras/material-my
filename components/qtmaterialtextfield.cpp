@@ -30,6 +30,7 @@ void QtMaterialTextFieldPrivate::init()
     showLabel      = false;
     showInputLine  = true;
     useThemeColors = true;
+    useThemeFont   = true;
 
     q->setFrame(false);
     q->setStyle(&QtMaterialStyle::instance());
@@ -37,9 +38,10 @@ void QtMaterialTextFieldPrivate::init()
     q->setMouseTracking(true);
     q->setTextMargins(0, 2, 0, 4);
 
-    q->setFont(QFont("Roboto", 11, QFont::Normal));
+    q->setupTheme();
 
     stateMachine->start();
+
     QCoreApplication::processEvents();
 }
 
@@ -92,8 +94,11 @@ void QtMaterialTextField::setShowLabel(bool value)
         d->stateMachine->setLabel(d->label);
     }
 
+    updateTypeset();
+
     if (value) {
-        setContentsMargins(10, 23+5, 10, 5);
+        int labelHeight = d->label->fontMetrics().height();
+        setContentsMargins(10, labelHeight+5, 10, 5);
     } else {
         setContentsMargins(10, 5, 10, 5);
     }
@@ -106,27 +111,21 @@ bool QtMaterialTextField::hasLabel() const
     return d->showLabel;
 }
 
-void QtMaterialTextField::setLabelFontSize(qreal size)
-{
-    Q_D(QtMaterialTextField);
+//void QtMaterialTextField::setLabelFontSize(qreal size)
+//{
+//    Q_D(QtMaterialTextField);
 
-    d->labelFontSize = size;
+//    d->labelFontSize = size;
 
-    if (d->label)
-    {
-        QFont font(d->label->font());
-        font.setPointSizeF(size);
-        d->label->setFont(font);
-        d->label->update();
-    }
-}
+//    if (d->label)
+//    {
+//        QFont font(d->label->font());
+//        font.setPointSizeF(size);
+//        d->label->setFont(font);
+//        d->label->update();
+//    }
+//}
 
-qreal QtMaterialTextField::labelFontSize() const
-{
-    Q_D(const QtMaterialTextField);
-
-    return d->labelFontSize;
-}
 
 void QtMaterialTextField::setLabel(const QString &label)
 {
@@ -143,6 +142,81 @@ QString QtMaterialTextField::label() const
 
     return d->labelString;
 }
+
+void QtMaterialTextField::setUseThemeFont(bool value)
+{
+    Q_D(QtMaterialTextField);
+
+    if (d->useThemeFont == value) {
+        return;
+    }
+    d->useThemeFont = value;
+    setupTheme();
+}
+
+bool QtMaterialTextField::useThemeFont() const
+{
+    Q_D(const QtMaterialTextField);
+
+    return d->useThemeFont;
+}
+
+
+void QtMaterialTextField::setMainFont(const QFont &font){
+    Q_D(QtMaterialTextField);
+
+    d->mainFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
+void QtMaterialTextField::setLabelFont(const QFont &font){
+    Q_D(QtMaterialTextField);
+
+    d->labelFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
+qreal QtMaterialTextField::labelFontSize() const
+{
+    Q_D(const QtMaterialTextField);
+
+    return d->labelFont.pointSizeF();
+}
+
+void QtMaterialTextField::checkThemeChange(){
+    Q_D(QtMaterialTextField);
+
+    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
+        return;
+    d->themeIdx = QtMaterialStyle::instance().themeIdx();
+
+    setupTheme();
+}
+
+void QtMaterialTextField::setupTheme(){
+    Q_D(QtMaterialTextField);
+
+    if(useThemeFont()){
+        d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
+        d->labelFont = QtMaterialStyle::instance().themeFont("Caption");
+    }
+
+    updateTypeset();
+
+    d->stateMachine->setupProperties();
+}
+
+void QtMaterialTextField::updateTypeset(){
+    Q_D(QtMaterialTextField);
+
+    this->setFont(d->mainFont);
+    if(d->label)
+        d->label->setFont(d->labelFont);
+}
+
+/////////////////////////
 
 void QtMaterialTextField::setTextColor(const QColor &color)
 {
@@ -268,6 +342,11 @@ bool QtMaterialTextField::hasInputLine() const
     return d->showInputLine;
 }
 
+void QtMaterialTextField::setHighlightBuddy(QWidget *buddy){
+    Q_D(QtMaterialTextField);
+    d->stateMachine->setHighlightBuddy(buddy);
+}
+
 QtMaterialTextField::QtMaterialTextField(QtMaterialTextFieldPrivate &d, QWidget *parent)
     : QLineEdit(parent),
       d_ptr(&d)
@@ -287,7 +366,7 @@ bool QtMaterialTextField::event(QEvent *event)
     case QEvent::Resize:
     case QEvent::Move: {
         if (d->label) {
-            d->label->setGeometry(rect().translated(10,-3));
+            d->label->setGeometry(rect());//.translated(10,-3));
         }
     }
     default:
@@ -302,6 +381,9 @@ bool QtMaterialTextField::event(QEvent *event)
 void QtMaterialTextField::paintEvent(QPaintEvent *event)
 {
     Q_D(QtMaterialTextField);
+
+    qDebug() << "checkThemeChange";
+    checkThemeChange();
 
     if(d->lastTextColor != textColor()){
         d->lastTextColor = textColor();

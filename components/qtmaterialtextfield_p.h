@@ -3,6 +3,7 @@
 
 #include <QtGlobal>
 #include <QColor>
+#include <QFont>
 
 class QtMaterialTextField;
 class QtMaterialTextFieldStateMachine;
@@ -33,6 +34,11 @@ public:
     bool                             showLabel;
     bool                             showInputLine;
     bool                             useThemeColors;
+    bool                             useThemeFont;
+
+    QFont                            mainFont;
+    QFont                            labelFont;
+    int                              themeIdx;
 };
 
 #endif // QTMATERIALTEXTFIELD_P_H

@@ -138,10 +138,10 @@ void QtMaterialCombo::setItemsTexts(const QStringList &data)
         QWidget *widget = d->dropdownLayout->itemAt(i)->widget();
         QtMaterialFlatButton *item;
         if ((item = static_cast<QtMaterialFlatButton *>(widget))) {
-            QFontMetrics fm(item->mainFont());
-            QString text = data.at(i);
-            QRect rect = fm.boundingRect(text);
-            item->setText(text);
+//            QFontMetrics fm(item->mainFont());
+//            QString text = data.at(i);
+//            QRect rect = fm.boundingRect(text);
+            item->setText(data.at(i));
         }
     }
 

@@ -22,10 +22,17 @@ public:
     void setUseThemeColors(bool value);
     bool useThemeColors() const;
 
+    void setUseThemeFont(bool value);
+    bool useThemeFont() const;
+
+    void setMainFont(const QFont &font);
+
+    void setLabelFont(const QFont &font);
+
     void setShowLabel(bool value);
     bool hasLabel() const;
 
-    void setLabelFontSize(qreal size);
+//    void setLabelFontSize(qreal size);
     qreal labelFontSize() const;
 
     void setLabel(const QString &label);
@@ -49,11 +56,17 @@ public:
     void setShowInputLine(bool value);
     bool hasInputLine() const;
 
+    void setHighlightBuddy(QWidget *buddy);
+
 protected:
-    QtMaterialTextField(QtMaterialTextFieldPrivate &d, QWidget *parent = 0);
+    QtMaterialTextField(QtMaterialTextFieldPrivate &d, QWidget *parent = nullptr);
 
     bool event(QEvent *event) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+
+    void updateTypeset();
+    void checkThemeChange();
+    void setupTheme();
 
     const QScopedPointer<QtMaterialTextFieldPrivate> d_ptr;
 

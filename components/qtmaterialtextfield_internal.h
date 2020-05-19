@@ -3,10 +3,12 @@
 
 #include <QStateMachine>
 #include <QtWidgets/QWidget>
+#include <QDebug>
 #include "qtmaterialtextfield.h"
 
 class QPropertyAnimation;
 class QtMaterialTextFieldLabel;
+class QEventTransition;
 
 class QtMaterialTextFieldStateMachine : public QStateMachine
 {
@@ -23,6 +25,8 @@ public:
     inline void setProgress(qreal progress);
     inline qreal progress() const;
 
+    void setHighlightBuddy(QWidget *buddy);
+
 public slots:
     void setupProperties();
 
@@ -35,7 +39,11 @@ private:
     QtMaterialTextFieldLabel  *m_label;
     QPropertyAnimation        *m_offsetAnimation;
     QPropertyAnimation        *m_colorAnimation;
+    QPropertyAnimation        *m_fontSizeAnimation;
     qreal                      m_progress;
+
+    QEventTransition          *m_buddyTransitionIn;
+    QEventTransition          *m_buddyTransitionOut;
 };
 
 inline void QtMaterialTextFieldStateMachine::setProgress(qreal progress)
@@ -54,6 +62,7 @@ class QtMaterialTextFieldLabel : public QWidget
     Q_OBJECT
 
     Q_PROPERTY(qreal scale WRITE setScale READ scale)
+    Q_PROPERTY(qreal fontSize WRITE setFontSize READ fontSize)
     Q_PROPERTY(QPointF offset WRITE setOffset READ offset)
     Q_PROPERTY(QColor color WRITE setColor READ color)
 
@@ -63,6 +72,9 @@ public:
 
     inline void setScale(qreal scale);
     inline qreal scale() const;
+
+    inline void setFontSize(qreal size);
+    inline qreal fontSize() const;
 
     inline void setOffset(const QPointF &pos);
     inline QPointF offset() const;
@@ -93,6 +105,20 @@ inline qreal QtMaterialTextFieldLabel::scale() const
 {
     return m_scale;
 }
+
+inline void QtMaterialTextFieldLabel::setFontSize(qreal size)
+{
+    QFont f = font();
+    f.setPointSizeF(size);
+    setFont(f);
+    update();
+}
+
+inline qreal QtMaterialTextFieldLabel::fontSize() const
+{
+    return font().pointSizeF();
+}
+
 
 inline void QtMaterialTextFieldLabel::setOffset(const QPointF &pos)
 {

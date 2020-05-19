@@ -94,7 +94,6 @@ public:
     void setText(const QString &text);
 
     void setMainFont(const QFont &font);
-    QFont mainFont() const;
 
     QSize sizeHint() const Q_DECL_OVERRIDE;
 

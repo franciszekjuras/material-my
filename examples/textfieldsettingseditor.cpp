@@ -4,6 +4,7 @@
 #include <qtmaterialtextfield.h>
 #include <lib/qtmaterialstyle.h>
 #include <qtmaterialframe.h>
+#include <qtmaterialslider.h>
 
 TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -29,22 +30,26 @@ TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     layout->addWidget(m_textField);
     layout->setAlignment(m_textField, Qt::AlignCenter);
 
-    m_textField->setLabel("Wat is this");
-    m_textField->setLabelFontSize(10.5);
-    QFont fs(m_textField->font());
-    fs.setPointSizeF(12.5);
-    m_textField->setFont(fs);
-    m_textField->setMinimumWidth(250);
-    m_textField->setReadOnly(true);
+    QtMaterialSlider *slider = new QtMaterialSlider;
+    layout->addWidget(slider);
+    m_textField->setHighlightBuddy(slider);
 
-    for(int i = 0; i < 5; ++i){
-        QtMaterialTextField *tfd = new QtMaterialTextField;
-        tfd->setLabel("Wat is this");
-        //tfd->setFont(fs);
-        tfd->setMinimumWidth(250);
-        layout->addWidget(tfd);
-        layout->setAlignment(tfd, Qt::AlignCenter);
-    }
+    m_textField->setLabel("Wat is this");
+//    m_textField->setLabelFontSize(10.5);
+//    QFont fs(m_textField->font());
+//    fs.setPointSizeF(12.5);
+//    m_textField->setFont(fs);
+//    m_textField->setMinimumWidth(250);
+//    m_textField->setReadOnly(true);
+
+//    for(int i = 0; i < 5; ++i){
+//        QtMaterialTextField *tfd = new QtMaterialTextField;
+//        tfd->setLabel("Wat is this");
+//        //tfd->setFont(fs);
+//        tfd->setMinimumWidth(250);
+//        layout->addWidget(tfd);
+//        layout->setAlignment(tfd, Qt::AlignCenter);
+//    }
 
     setupForm();
 
