@@ -2,19 +2,21 @@
 #define QTMATERIALSTYLE_H
 
 #include <QtWidgets/QCommonStyle>
-#include "lib/qtmaterialstyle_p.h"
-#include "lib/qtmaterialtheme.h"
+//#include /*"lib/*/"qtmaterialstyle_p.h"
+#include /*"lib/*/"qtmaterialtheme.h"
 
 #define MATERIAL_DISABLE_THEME_COLORS \
     if (d->useThemeColors == true) { d->useThemeColors = false; }
 
+class QtMaterialStylePrivate;
 class QtMaterialTheme;
 
 class QtMaterialStyle : public QCommonStyle
 {
     Q_OBJECT
 
-public:
+public:    
+    ~QtMaterialStyle();
     inline static QtMaterialStyle &instance();
     inline static QColor transparentized(QColor clr, double alpha_mult);
 

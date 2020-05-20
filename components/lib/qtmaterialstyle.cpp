@@ -1,4 +1,5 @@
 #include "lib/qtmaterialstyle.h"
+#include "lib/qtmaterialstyle_p.h"
 #include <QFontDatabase>
 #include "lib/qtmaterialtheme.h"
 
@@ -84,4 +85,8 @@ QtMaterialStyle::QtMaterialStyle()
       d_ptr(new QtMaterialStylePrivate(this))
 {
     d_func()->init();
+}
+
+QtMaterialStyle::~QtMaterialStyle()
+{
 }
