@@ -16,6 +16,7 @@ SOURCES = \
     qtmaterialdropdown_internal.cpp \
     qtmaterialfab.cpp \
     qtmaterialframe.cpp \
+    qtmateriallabel.cpp \
     qtmaterialraisedbutton.cpp \
     qtmaterialflatbutton_internal.cpp \
     qtmaterialflatbutton.cpp \
@@ -77,6 +78,7 @@ HEADERS = \
     qtmaterialfab_p.h \
     qtmaterialfab.h \
     qtmaterialframe.h \
+    qtmateriallabel.h \
     qtmaterialraisedbutton_p.h \
     qtmaterialraisedbutton.h \
     qtmaterialflatbutton_internal.h \

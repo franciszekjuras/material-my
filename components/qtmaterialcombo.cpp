@@ -39,12 +39,12 @@ void QtMaterialComboPrivate::init()
     masterButton = new QtMaterialTextField;
     masterButton->setLabel("State");
     masterButton->setReadOnly(true);
+    masterButton->setCursor(Qt::PointingHandCursor);
     masterLayout->addWidget(masterButton);
     masterButton->installEventFilter(q);
 
     masterLayout->setContentsMargins(0, 0, 0, 0);
     masterLayout->setSpacing(0);
-
 
     dropdownLayout  = new QVBoxLayout;
     dropdown->setLayout(dropdownLayout);

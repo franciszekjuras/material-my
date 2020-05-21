@@ -12,7 +12,7 @@ public:
     ~MainWindow();
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
 
 };
 

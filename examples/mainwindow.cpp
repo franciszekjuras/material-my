@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     theme->setColor("disabled2", Material::grey700);
     theme->setColor("disabled3", Material::grey800);
 
-    QtMaterialStyle::instance().setTheme(theme);
+//    QtMaterialStyle::instance().setTheme(theme);
 
     QWidget *widget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;

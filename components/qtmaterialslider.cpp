@@ -107,6 +107,12 @@ void QtMaterialSliderPrivate::setHovered(bool status)
 
     hover = status;
 
+    if(status){
+        q->setCursor(Qt::PointingHandCursor);
+    } else{
+        q->setCursor(Qt::ArrowCursor);
+    }
+
     if (!q->hasFocus()) {
         if (status) {
             stateMachine->postEvent(new QtMaterialStateTransitionEvent(SliderNoFocusMouseEnter));
@@ -303,7 +309,7 @@ void QtMaterialSlider::mouseMoveEvent(QMouseEvent *event)
             update();
         }
 
-        QRectF thumb(0, 0, 16, 16);
+        QRectF thumb(0, 0, 25, 25);
         thumb.moveCenter(d->thumbBoundingRect().center());
 
         if (thumb.contains(event->pos()) != d->hoverThumb) {
@@ -326,7 +332,7 @@ void QtMaterialSlider::mousePressEvent(QMouseEvent *event)
 
     const QPoint pos = event->pos();
 
-    QRectF thumb(0, 0, 16, 16);
+    QRectF thumb(0, 0, 25, 25);
     thumb.moveCenter(d->thumbBoundingRect().center());
 
     if (thumb.contains(pos)) {

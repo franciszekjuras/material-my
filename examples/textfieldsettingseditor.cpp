@@ -5,6 +5,7 @@
 #include <lib/qtmaterialstyle.h>
 #include <qtmaterialframe.h>
 #include <qtmaterialslider.h>
+#include <qtmateriallabel.h>
 
 TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
     : QWidget(parent),
@@ -27,12 +28,16 @@ TextFieldSettingsEditor::TextFieldSettingsEditor(QWidget *parent)
 
     layout = new QVBoxLayout;
     canvas->setLayout(layout);
+
+    QtMaterialLabel *matLabel = new QtMaterialLabel("Super label");
+    layout->addWidget(matLabel);
+
     layout->addWidget(m_textField);
     layout->setAlignment(m_textField, Qt::AlignCenter);
 
     QtMaterialSlider *slider = new QtMaterialSlider;
     layout->addWidget(slider);
-    m_textField->setHighlightBuddy(slider);
+//    m_textField->setHighlightBuddy(slider);
 
     m_textField->setLabel("Wat is this");
 //    m_textField->setLabelFontSize(10.5);

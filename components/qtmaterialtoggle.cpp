@@ -40,6 +40,8 @@ void QtMaterialTogglePrivate::init()
     q->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     q->setFont(QFont("Roboto", 11, QFont::Normal));
 
+    q->setCursor(Qt::PointingHandCursor);
+
     stateMachine->addState(offState);
     stateMachine->addState(onState);
     stateMachine->setInitialState(offState);

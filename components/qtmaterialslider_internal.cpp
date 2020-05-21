@@ -45,9 +45,9 @@ QtMaterialSliderStateMachine::QtMaterialSliderStateMachine(
     m_pulseOutState->assignProperty(thumb, "haloSize", 35);
     m_pulseInState->assignProperty(thumb, "haloSize", 28);
 
-    m_inactiveState->assignProperty(thumb, "diameter", 11);
-    m_focusState->assignProperty(thumb, "diameter", 11);
-    m_slidingState->assignProperty(thumb, "diameter", 17);
+    m_inactiveState->assignProperty(thumb, "diameter", 16); //11
+    m_focusState->assignProperty(thumb, "diameter", 16); //11
+    m_slidingState->assignProperty(thumb, "diameter", 20); //17
 
     QAbstractTransition *transition;
     QtMaterialStateTransition *customTransition;
@@ -59,7 +59,7 @@ QtMaterialSliderStateMachine::QtMaterialSliderStateMachine(
     customTransition->setTargetState(m_focusState);
 
     animation = new QPropertyAnimation(thumb, "haloSize", this);
-    animation->setEasingCurve(QEasingCurve::InOutSine);
+    animation->setEasingCurve(QEasingCurve::OutCubic); //InOutSine
     customTransition->addAnimation(animation);
     customTransition->addAnimation(new QPropertyAnimation(track, "fillColor", this));
     m_inactiveState->addTransition(customTransition);
@@ -70,7 +70,7 @@ QtMaterialSliderStateMachine::QtMaterialSliderStateMachine(
     transition->setTargetState(m_focusState);
 
     animation = new QPropertyAnimation(thumb, "haloSize", this);
-    animation->setEasingCurve(QEasingCurve::InOutSine);
+    animation->setEasingCurve(QEasingCurve::OutCubic); //InOutSine
     transition->addAnimation(animation);
     transition->addAnimation(new QPropertyAnimation(track, "fillColor", this));
     m_inactiveState->addTransition(transition);
@@ -106,7 +106,7 @@ QtMaterialSliderStateMachine::QtMaterialSliderStateMachine(
     animation->setEasingCurve(QEasingCurve::InOutSine);
     animation->setDuration(1000);
     transition->addAnimation(animation);
-    m_pulseOutState->addTransition(transition);
+//    m_pulseOutState->addTransition(transition);
 
     // Pulse out
 
@@ -117,7 +117,7 @@ QtMaterialSliderStateMachine::QtMaterialSliderStateMachine(
     animation->setEasingCurve(QEasingCurve::InOutSine);
     animation->setDuration(1000);
     transition->addAnimation(animation);
-    m_pulseInState->addTransition(transition);
+//    m_pulseInState->addTransition(transition);
 
     // Slider pressed
 
@@ -206,7 +206,7 @@ void QtMaterialSliderStateMachine::setupProperties()
     QColor trackColor = m_slider->trackColor();
     QColor thumbColor = m_slider->thumbColor();
 
-    m_inactiveState->assignProperty(m_track, "fillColor", trackColor.lighter(130));
+    m_inactiveState->assignProperty(m_track, "fillColor", QtMaterialStyle::instance().transparentized(trackColor,0.8));
     m_slidingState->assignProperty(m_track, "fillColor", trackColor);
     m_focusState->assignProperty(m_track, "fillColor", trackColor);
 

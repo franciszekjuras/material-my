@@ -50,6 +50,8 @@ void QtMaterialCheckablePrivate::init()
     q->setStyle(&QtMaterialStyle::instance());
     q->setFont(QFont("Roboto", 11, QFont::Normal));
 
+    q->setCursor(Qt::PointingHandCursor);
+
     stateMachine->addState(uncheckedState);
     stateMachine->addState(checkedState);
     stateMachine->addState(disabledUncheckedState);

@@ -79,6 +79,41 @@ bool QtMaterialTextField::useThemeColors() const
     return d->useThemeColors;
 }
 
+void QtMaterialTextField::setUseThemeFont(bool value)
+{
+    Q_D(QtMaterialTextField);
+
+    if (d->useThemeFont == value) {
+        return;
+    }
+    d->useThemeFont = value;
+    setupTheme();
+}
+
+bool QtMaterialTextField::useThemeFont() const
+{
+    Q_D(const QtMaterialTextField);
+
+    return d->useThemeFont;
+}
+
+
+void QtMaterialTextField::setMainFont(const QFont &font){
+    Q_D(QtMaterialTextField);
+
+    d->mainFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
+void QtMaterialTextField::setLabelFont(const QFont &font){
+    Q_D(QtMaterialTextField);
+
+    d->labelFont = font;
+    d->useThemeFont = false;
+    updateTypeset();
+}
+
 void QtMaterialTextField::setShowLabel(bool value)
 {
     Q_D(QtMaterialTextField);
@@ -143,80 +178,12 @@ QString QtMaterialTextField::label() const
     return d->labelString;
 }
 
-void QtMaterialTextField::setUseThemeFont(bool value)
-{
-    Q_D(QtMaterialTextField);
-
-    if (d->useThemeFont == value) {
-        return;
-    }
-    d->useThemeFont = value;
-    setupTheme();
-}
-
-bool QtMaterialTextField::useThemeFont() const
-{
-    Q_D(const QtMaterialTextField);
-
-    return d->useThemeFont;
-}
-
-
-void QtMaterialTextField::setMainFont(const QFont &font){
-    Q_D(QtMaterialTextField);
-
-    d->mainFont = font;
-    d->useThemeFont = false;
-    updateTypeset();
-}
-
-void QtMaterialTextField::setLabelFont(const QFont &font){
-    Q_D(QtMaterialTextField);
-
-    d->labelFont = font;
-    d->useThemeFont = false;
-    updateTypeset();
-}
-
 qreal QtMaterialTextField::labelFontSize() const
 {
     Q_D(const QtMaterialTextField);
 
     return d->labelFont.pointSizeF();
 }
-
-void QtMaterialTextField::checkThemeChange(){
-    Q_D(QtMaterialTextField);
-
-    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
-        return;
-    d->themeIdx = QtMaterialStyle::instance().themeIdx();
-
-    setupTheme();
-}
-
-void QtMaterialTextField::setupTheme(){
-    Q_D(QtMaterialTextField);
-
-    if(useThemeFont()){
-        d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
-        d->labelFont = QtMaterialStyle::instance().themeFont("Caption");
-    }
-
-    updateTypeset();
-
-    d->stateMachine->setupProperties();
-}
-
-void QtMaterialTextField::updateTypeset(){
-    Q_D(QtMaterialTextField);
-
-    this->setFont(d->mainFont);
-    if(d->label)
-        d->label->setFont(d->labelFont);
-}
-
-/////////////////////////
 
 void QtMaterialTextField::setTextColor(const QColor &color)
 {
@@ -354,6 +321,37 @@ QtMaterialTextField::QtMaterialTextField(QtMaterialTextFieldPrivate &d, QWidget 
     d_func()->init();
 }
 
+void QtMaterialTextField::checkThemeChange(){
+    Q_D(QtMaterialTextField);
+
+    if(QtMaterialStyle::instance().themeIdx() == d->themeIdx)
+        return;
+    d->themeIdx = QtMaterialStyle::instance().themeIdx();
+
+    setupTheme();
+}
+
+void QtMaterialTextField::setupTheme(){
+    Q_D(QtMaterialTextField);
+
+    if(useThemeFont()){
+        d->mainFont = QtMaterialStyle::instance().themeFont("Subtitle1");
+        d->labelFont = QtMaterialStyle::instance().themeFont("Caption");
+    }
+
+    updateTypeset();
+
+    d->stateMachine->setupProperties();
+}
+
+void QtMaterialTextField::updateTypeset(){
+    Q_D(QtMaterialTextField);
+
+    this->setFont(d->mainFont);
+    if(d->label)
+        d->label->setFont(d->labelFont);
+}
+
 /*!
  *  \reimp
  */
@@ -382,7 +380,6 @@ void QtMaterialTextField::paintEvent(QPaintEvent *event)
 {
     Q_D(QtMaterialTextField);
 
-    qDebug() << "checkThemeChange";
     checkThemeChange();
 
     if(d->lastTextColor != textColor()){

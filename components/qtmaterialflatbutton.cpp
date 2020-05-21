@@ -67,6 +67,8 @@ void QtMaterialFlatButtonPrivate::init()
     q->setAttribute(Qt::WA_Hover);
     q->setMouseTracking(true);
 
+    q->setCursor(Qt::PointingHandCursor);
+
     q->setupTheme();
     //mainFont = QtMaterialStyle::instance().themeFont("Button");
 
