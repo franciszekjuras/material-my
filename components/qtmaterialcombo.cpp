@@ -1,11 +1,12 @@
 #include "qtmaterialcombo.h"
 #include "qtmaterialcombo_p.h"
 #include "qtmaterialdropdown_internal.h"
-#include <QtWidgets/QVBoxLayout>
-#include <QDebug>
-#include <QKeyEvent>
 #include "qtmaterialflatbutton.h"
 #include "qtmaterialtextfield.h"
+#include <QtWidgets/QVBoxLayout>
+#include <QDebug>
+#include <QStringList>
+#include <QKeyEvent>
 
 /*!
  *  \class QtMaterialComboPrivate
@@ -51,17 +52,6 @@ void QtMaterialComboPrivate::init()
 
     dropdownLayout->setContentsMargins(0, 0, 0, 0);
     dropdownLayout->setSpacing(0);
-
-//    QObject::connect(masterButton, &QtMaterialFlatButton::clicked, q,
-//        [=](bool v){
-//            Q_UNUSED(v)
-//            if(this->frame->isVisible())
-//                this->stateMachine->shouldClose();
-//            else{
-//                this->stateMachine->shouldOpen();
-//            }
-//        });
-
 }
 
 /*!
@@ -101,11 +91,9 @@ bool QtMaterialCombo::eventFilter(QObject *watched, QEvent *event)
     return QtMaterialDropdown::eventFilter(watched, event);
 }
 
-void QtMaterialCombo::setItemsTexts(const QStringList &data)
+void QtMaterialCombo::setItems(const QStringList &data)
 {
     Q_D(QtMaterialCombo);
-
-    d->dataSource = data;
 
     const int diff = data.length() - d->dropdownLayout->count();
 

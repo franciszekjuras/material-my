@@ -1,8 +1,6 @@
 #ifndef QTMATERIALDROPDOWN_P_H
 #define QTMATERIALDROPDOWN_P_H
 
-#include <QStringList>
-
 class QWidget;
 class QVBoxLayout;
 class QtMaterialDropdownOverlay;
@@ -25,7 +23,6 @@ public:
     QWidget                            *frame;
     QtMaterialDropdownStateMachine *stateMachine;
     QVBoxLayout                        *dropdownLayout;
-    QStringList                         dataSource;
     int                                 maxWidth;
 };
 

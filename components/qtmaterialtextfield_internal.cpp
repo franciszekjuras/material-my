@@ -108,13 +108,13 @@ void QtMaterialTextFieldStateMachine::setLabel(QtMaterialTextFieldLabel *label)
     if (m_label)
     {
         m_offsetAnimation = new QPropertyAnimation(m_label, "offset", this);
-        m_offsetAnimation->setDuration(200);
-        m_offsetAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        m_offsetAnimation->setDuration(150);
+        m_offsetAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         addDefaultAnimation(m_offsetAnimation);
 
         m_fontSizeAnimation = new QPropertyAnimation(m_label, "fontSize", this);
-        m_fontSizeAnimation->setDuration(200);
-        m_fontSizeAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        m_fontSizeAnimation->setDuration(150);
+        m_fontSizeAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         addDefaultAnimation(m_fontSizeAnimation);
 
         m_colorAnimation = new QPropertyAnimation(m_label, "color", this);

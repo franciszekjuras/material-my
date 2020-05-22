@@ -51,10 +51,10 @@ ComboSettingsEditor::ComboSettingsEditor(QWidget *parent)
       , "American Samoa"
     };
 
-    m_combo->setItemsTexts(states);
+    m_combo->setItems(states);
 
     states.append("Lubię placki");
-    m_combo->setItemsTexts(states);
+    m_combo->setItems(states);
 
 //    QtMaterialFrame *frm = new QtMaterialFrame;
 
